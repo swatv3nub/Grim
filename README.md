@@ -6,15 +6,7 @@
 
 
 <p align="center">
-	<img src="https://i.imgur.com/qdoV097.jpg" width="200px">
-</p>
-
-
-
-
-# sᴄʀᴇᴇɴsʜᴏᴛ ᴏғ ᴛʜᴇ ᴛᴏᴏʟ
-<p align="center">
-	<img src="https://i.imgur.com/a9YIv4D.png" width="400px">
+	<img src="https://telegra.ph/file/931328457daa5e6e45ef3.jpg">
 </p>
 
 
