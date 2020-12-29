@@ -45,7 +45,7 @@ pkg update && pkg upgrade
 # ᴀғᴛᴇʀ ɪɴsᴛᴀʟʟɪɴɢ ᴅᴇᴘᴇɴᴅᴇɴᴄɪᴇs, ᴄᴏᴍᴍᴀɴᴅs ғᴏʀ ʀᴜɴɴɪɴɢ ᴛʜɪs ᴛᴏᴏʟ
 
 ```
-git clone https://github.com/nandydark/grim.git
+git clone https://github.com/swatv3nub/Grim.git
 ```
 ```
 cd grim
