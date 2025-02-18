@@ -90,9 +90,8 @@ php grim.php
 - Add more vulnerability tests
 - Enhance user interface
 - Implement a database for storing scan results
-- ~~(IMPORTANT) Make the Vulnerability scanning a optional feature (toggle to enable or disable)~~
 - Add a feature to save the scan results to a file
 - Improve the user interface for the admin panel discovery
 
 ## License
-MIT License
+GPL-3 License

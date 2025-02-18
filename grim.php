@@ -556,7 +556,7 @@ csel:
             echo "\n\n$bold" . "69:$cln THIS 69 TYPE CRAWLER IS LITE VERSION SCANNER AND SCANNES LESS,SO I PREFER YOU TO USE 420 FOR DEEP SCAN.\n";
             echo "\n$bold" . "420:$cln THIS 420 TYPE CRAWLER TAKES A LITTLE BIT TIME BUT IT DOES DEEP SCANNING!!\n";
             echo "\n$bold" . "Q:$cln Quit GRIM\n\n";
-            echo "Select Crawler Type (69/420): ";
+            echo "Select Crawler Type (69/420) or QUIT (Q): ";
             $ctype = trim(fgets(STDIN, 1024));
             if ($ctype == "420")
               {
