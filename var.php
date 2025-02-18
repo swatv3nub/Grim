@@ -29,7 +29,7 @@ $bold   = "\e[1m";
 $italic = "\e[3m";
 function grim_banner(){
   system("clear");
-  echo $bold . $orange . "
+    echo $bold . $orange . "
                  _,.-------.,_
              ,;~'             '~;,
            ,;                     ;,
@@ -46,13 +46,13 @@ function grim_banner(){
         |     ---;' / | \ `;---     |                        |
          \__.       \/^\/       .__/                         |
           V| \                 / |V                          v
-           | |T~\___!___!___/~T| |           INFORMATION GATHERING AND VULNERABILITY FETCHING TOOL
-           | |`IIII_I_I_I_IIII'| |           ------X Project Hackfreaks X------
+           | |T~\___!___!___/~T| |           
+           | |`IIII_I_I_I_IIII'| |           Information Gathering and Vulnerability Scanning Tool
            |  \,III I I I III,/  |
-            \   `~~~~~~~~~~'    /            Telegram : @ProjectHackfreaks
+            \   `~~~~~~~~~~'    /            
               \   .       .   /              
                 \.    ^    ./
-                  ^~~~^~~~^   
+                  ^~~~^~~~^  
                                                        
   \n";
 }

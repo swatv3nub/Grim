@@ -52,46 +52,24 @@ All scans provide color-coded results:
 ## Usage
 
 1. Clone the repository
-2. Run `php grim.php`
-3. Enter the target website (without http/https)
-4. Select scanning options
+2. Run `sudo apt-get install php-curl php-xml`
+3. Run `php grim.php`
+4. Enter the target website (without http/https)
+5. Follow on screen instructions.
 
-### New Vulnerability Scanning Features
-
-#### XSS Detection
-GRIM now tests for Cross-Site Scripting vulnerabilities using common payloads:
-- `<script>alert(1)</script>`
-- `"><script>alert(1)</script>`
-
-#### Directory Traversal Detection
-GRIM checks for directory traversal vulnerabilities using test patterns:
-- `../../../../etc/passwd`
-- `../index.php`
-
-The scanner will report potential vulnerabilities with color-coded results:
-- Red: Potential vulnerability found
-- Green: No vulnerability detected
 
 ## Requirements
 - PHP 7.0+
 - cURL extension
 - DOM extension
 
-## Installation
-```bash
-sudo apt-get install php-curl php-xml
-git clone https://github.com/swatv3nub/grim
-cd grim
-php grim.php
-```
 
 ## To-Do
 - Improve crawling functionality
-- Add more vulnerability tests
-- Enhance user interface
-- Implement a database for storing scan results
-- Add a feature to save the scan results to a file
+- Rework SQL injection detection scan.
+- Add a feature to save the scan results to a file / database
 - Improve the user interface for the admin panel discovery
+- Improve the user interface for the backup file discovery
 
 ## License
 GPL-3 License

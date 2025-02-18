@@ -133,10 +133,10 @@ scanlist:
         |     ---;' / | \ `;---     |                        |
          \__.       \/^\/       .__/                         |
           V| \                 / |V                          v
-           | |T~\___!___!___/~T| |           INFORMATION GATHERING AND VULNERABILITY FETCHING TOOL
-           | |`IIII_I_I_I_IIII'| |           ------X Project Hackfreaks X------
-           |  \,III I I I III,/  |
-            \   `~~~~~~~~~~'    /            Telegram : @ProjectHackfreaks
+           | |T~\___!___!___/~T| |           
+           | |`IIII_I_I_I_IIII'| |           Information Gathering and Vulnerability Scanning Tool
+           |  \,III I I I III,/  |           
+            \   `~~~~~~~~~~'    /            
               \   .       .   /              
                 \.    ^    ./
                   ^~~~^~~~^
@@ -173,7 +173,7 @@ askscan:
           }
         elseif ($scan == 'q' | $scan == 'Q')
           {
-            echo "\n\n\t THANKS FOR USING GRIM, YOU CAN JOIN US ON TELEGRAM CHANNEL TOO @ProjectHackfreaks \n\n";
+            echo "\n\nTHANK YOU FOR USING GRIM.\n\n";
             die();
           }
         elseif ($scan == 'b' || $scan == 'B')
@@ -354,37 +354,37 @@ vuln:
               $links = $dom->getElementsByTagName('a');
               $vlnk  = 0;
               
-              // SQL Injection Scan
-              foreach ($links as $link)
-                {
-                  $lol = $link->getAttribute('href');
-                  if (strpos($lol, '?') !== false)
-                    {
-                      echo "\n$yellow [#] " . $fgreen . $lol . "\n$cln";
-                      echo $yellow . " [-] Searching For SQL Errors: ";
-                      $sqllist = file_get_contents('sqlerrors.ini');
-                      $sqlist  = explode(',', $sqllist);
-                      if (strpos($lol, '://') !== false)
-                        {
-                          $sqlurl = $lol . "'";
-                        }
-                      else
-                        {
-                          $sqlurl = $ipsl . $ip . "/" . $lol . "'";
-                        }
-                      $sqlsc = file_get_contents($sqlurl);
-                      $sqlvn = "$red Not Found";
-                      foreach ($sqlist as $sqli)
-                        {
-                          if (strpos($sqlsc, $sqli) !== false)
-                              $sqlvn = "$green Found!";
-                        }
-                      echo $sqlvn;
-                      echo "\n$cln";
-                      echo "\n";
-                      $vlnk++;
-                    }
-                }
+              // SQL Injection Scan - NEEDS REWORK
+              // foreach ($links as $link)
+              //   {
+              //     $lol = $link->getAttribute('href');
+              //     if (strpos($lol, '?') !== false)
+              //       {
+              //         echo "\n$yellow [#] " . $fgreen . $lol . "\n$cln";
+              //         echo $yellow . " [-] Searching For SQL Errors: ";
+              //         $sqllist = file_get_contents('sqlerrors.ini');
+              //         $sqlist  = explode(',', $sqllist);
+              //         if (strpos($lol, '://') !== false)
+              //           {
+              //             $sqlurl = $lol . "'";
+              //           }
+              //         else
+              //           {
+              //             $sqlurl = $ipsl . $ip . "/" . $lol . "'";
+              //           }
+              //         $sqlsc = file_get_contents($sqlurl);
+              //         $sqlvn = "$red Not Found";
+              //         foreach ($sqlist as $sqli)
+              //           {
+              //             if (strpos($sqlsc, $sqli) !== false)
+              //                 $sqlvn = "$green Found!";
+              //           }
+              //         echo $sqlvn;
+              //         echo "\n$cln";
+              //         echo "\n";
+              //         $vlnk++;
+              //       }
+              //   }
               
               // XSS Scan
               echo "\n$yellow [XSS Scan]";
@@ -553,12 +553,12 @@ csel:
             echo "--------------->";
             echo "\n\n";
             echo "\nCrawling Types & Descriptions:$cln";
-            echo "\n\n$bold" . "69:$cln THIS 69 TYPE CRAWLER IS LITE VERSION SCANNER AND SCANNES LESS,SO I PREFER YOU TO USE 420 FOR DEEP SCAN.\n";
-            echo "\n$bold" . "420:$cln THIS 420 TYPE CRAWLER TAKES A LITTLE BIT TIME BUT IT DOES DEEP SCANNING!!\n";
+            echo "\n\n$bold" . "A:$cln Light Scanning.\n";
+            echo "\n$bold" . "B:$cln Deep Scanning\n";
             echo "\n$bold" . "Q:$cln Quit GRIM\n\n";
-            echo "Select Crawler Type (69/420) or QUIT (Q): ";
+            echo "Select Crawler Type (A/B) or QUIT (Q): ";
             $ctype = trim(fgets(STDIN, 1024));
-            if ($ctype == "420")
+            if ($ctype == "B" || $ctype == "b")
               {
                 echo "\n\t -[ A D V A N C E   C R A W L I N G ]-\n";
                 echo "\n\n";
@@ -663,7 +663,7 @@ csel:
                     echo "\n File Not Found, Aborting Crawl ....\n";
                   }
               }
-            elseif ($ctype == "69")
+            elseif ($ctype == "A" || $ctype == "a")
               {
                 echo "\n\t -[ B A S I C   C R A W L I N G ]-\n";
                 echo "\n\n";
@@ -759,10 +759,11 @@ csel:
               }
             elseif($ctype == "q" | $ctype == "Q")
               {
-                echo "\n\n\t THANKS FOR USING GRIM, YOU CAN JOIN US ON TELEGRAM CHANNEL TOO @ProjectHackfreaks \n\n";
+                echo "\n\n\t THANK YOU FOR USING GRIM.\n\n";
                 die();
               }
             else {
+              echo "\n\n[-] Invalid Input. Please Try Again [-]\n";
               goto csel;
             }
           }
