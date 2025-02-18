@@ -354,38 +354,27 @@ vuln:
               $links = $dom->getElementsByTagName('a');
               $vlnk  = 0;
               
-              // SQL Injection Scan - NEEDS REWORK
-              // foreach ($links as $link)
-              //   {
-              //     $lol = $link->getAttribute('href');
-              //     if (strpos($lol, '?') !== false)
-              //       {
-              //         echo "\n$yellow [#] " . $fgreen . $lol . "\n$cln";
-              //         echo $yellow . " [-] Searching For SQL Errors: ";
-              //         $sqllist = file_get_contents('sqlerrors.ini');
-              //         $sqlist  = explode(',', $sqllist);
-              //         if (strpos($lol, '://') !== false)
-              //           {
-              //             $sqlurl = $lol . "'";
-              //           }
-              //         else
-              //           {
-              //             $sqlurl = $ipsl . $ip . "/" . $lol . "'";
-              //           }
-              //         $sqlsc = file_get_contents($sqlurl);
-              //         $sqlvn = "$red Not Found";
-              //         foreach ($sqlist as $sqli)
-              //           {
-              //             if (strpos($sqlsc, $sqli) !== false)
-              //                 $sqlvn = "$green Found!";
-              //           }
-              //         echo $sqlvn;
-              //         echo "\n$cln";
-              //         echo "\n";
-              //         $vlnk++;
-              //       }
-              //   }
-              
+              // SQL Injection Scan
+              echo "\n$yellow [SQL Injection Scan]";
+              foreach ($sql_payloads as $payload) {
+                  $test_url = $lulzurl . "?id=" . urlencode($payload);
+                  $response = @file_get_contents($test_url);
+                  if ($response === FALSE) {
+                      echo "\n$red [-] Request failed for URL: $test_url";
+                      continue;
+                  }
+                  // Check for common SQL error messages or unexpected behavior
+                  if (strpos($response, 'error') !== false || 
+                      strpos($response, 'SQL') !== false ||
+                      strpos($response, 'syntax') !== false ||
+                      strpos($response, 'mysql') !== false) {
+                      echo "\n$red [-] Potential SQL Injection Vulnerability Found!\nPayload: $payload";
+                  } else {
+                      echo "\n$green [-] No SQL Injection Vulnerability Detected";
+                  }
+              }
+              echo "\n$cln";
+
               // XSS Scan
               echo "\n$yellow [XSS Scan]";
             

