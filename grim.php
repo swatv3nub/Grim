@@ -343,7 +343,7 @@ askscan:
 vuln:
             echo "\n\n$bold" . $lblue . "V U L N E R A B I L I T Y   S C A N N E R\n";
             echo "--------------->$cln";
-            echo "Run Vulnerability Scan (y/n): ";
+            echo "\n\n$italic" . $amber . "\nRun Vulnerability Scan (y/n): ";
             $scannnn = trim(fgets(STDIN, 1024));
             if ($scannnn == "yes" || $scannnn == "y" || $scannnn == "Y") {
               echo "\n";

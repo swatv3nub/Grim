@@ -26,6 +26,7 @@ $redbg = "\e[101m";
 $grey = "\e[37m";
 $cyan = "\e[36m";
 $bold   = "\e[1m";
+$italic = "\e[3m";
 function grim_banner(){
   system("clear");
   echo $bold . $orange . "
