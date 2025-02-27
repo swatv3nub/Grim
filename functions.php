@@ -196,7 +196,7 @@ function extract_social_links($sourcecode){
       array_push($social_links_array['pinterest'], $link);
     }
     else {
-      // FUCK YOURSELF
+      
     }
   }
   if ($total_social_link_count == 0){
@@ -323,6 +323,19 @@ function fetch_url($url) {
   return $data;
 }
 
+function saveScanResults($results, $filename = 'scan_results.txt') {
+    $timestamp = date('Y-m-d H:i:s');
+    $header = "Scan Results - $timestamp\n";
+    $header .= "========================\n\n";
+    
+    try {
+        file_put_contents($filename, $header . $results . "\n\n", FILE_APPEND);
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
 function get_similarweb_rank($url) {
   $domain = parse_url($url, PHP_URL_HOST) ?: $url;
   $sw_url = "https://www.similarweb.com/website/$domain/";
@@ -346,7 +359,7 @@ function get_similarweb_rank($url) {
 
   return isset($matches[1]) ? "Global Rank: #" . $matches[1] : "N/A (Rank not found)";
 }
-function bv_moz_info($url){
+function bv_moz_info($url, $saveResults = false){
   global $bold, $red, $fgreen, $lblue, $blue;
   require ("config.php");
   if (strpos($accessID, " ") !== false OR strpos($secretKey, " ") !== false){
@@ -368,9 +381,16 @@ function bv_moz_info($url){
   	$content = curl_exec($curlhandle);
   	curl_close($curlhandle);
   	$resObj = json_decode($content);
-    echo $bold . $lblue . "[i] Moz Rank : " . $fgreen . $resObj->{'umrp'} . "\n";
-  	echo $bold . $lblue . "[i] Domain Authority : " . $fgreen . $resObj->{'pda'} . "\n";
-  	echo $bold . $lblue . "[i] Page Authority : " . $fgreen . $resObj->{'upa'} . "\n";
+  $results = $bold . $lblue . "[i] Moz Rank : " . $fgreen . $resObj->{'umrp'} . "\n";
+  $results .= $bold . $lblue . "[i] Domain Authority : " . $fgreen . $resObj->{'pda'} . "\n";
+  $results .= $bold . $lblue . "[i] Page Authority : " . $fgreen . $resObj->{'upa'} . "\n";
+  
+  echo $results;
+  
+  if ($saveResults) {
+      saveScanResults($results);
+  }
+
   }
 }
 ?>

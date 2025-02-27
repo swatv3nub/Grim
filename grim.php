@@ -7,7 +7,7 @@ echo $cln;
 function update()
     {
         echo "\n\e[91m\e[1m[+] GRIM UPDATE UTILITY [+]\nUpdate in progress, please wait...\n\n$cln";
-        system("git fetch origin && git reset --hard origin/master && git clean -f -d");
+        system("git fetch origin && git reset --hard origin/Alpha && git clean -f -d");
         echo $bold . $fgreen . "[i] Job finished successfully! Please Restart GRIM \n" . $cln;
         exit;
     }
@@ -29,7 +29,7 @@ else
         echo $bold . $red . "\n[!] DOM Module Is Missing! Try 'fix' command OR Install php-xml\n" . $cln;
       }
   }
-thephuckinstart:
+thestart:
 echo "\n";
 userinput(" NOTE - PUT WEBSITE IN THIS FORMAT -> site.com AND DON'T PUT HTTP OR HTTPS HERE
      ENTER THE WEBSITE FOR SCANNING ");
@@ -43,7 +43,7 @@ if ($ip == "help")
     echo $bold . $fgreen . "[2] fix:$cln Installs All Required Modules (Suggested If You Are Running The Tool For The First Time)\n";
     echo $bold . $fgreen . "[3] URL:$cln Enter The Domain Name Which You Want To Scan (Format:www.sample.com / sample.com)\n";
     echo $bold . $fgreen . "[4] update:$cln Updates The Script To The Newest Version Available.\n";
-    goto thephuckinstart;
+    goto thestart;
   }
 elseif ($ip == "fix")
   {
@@ -83,17 +83,17 @@ elseif ($ip == "update")
 elseif (strpos($ip, '://') !== false)
   {
     echo $bold . $red . "\n[!] (HTTP/HTTPS) Detected In Input! Enter URL Without Http/Https\n" . $CURLOPT_RETURNTRANSFER;
-    goto thephuckinstart;
+    goto thestart;
   }
 elseif (strpos($ip, '.') == false)
   {
     echo $bold . $red . "\n[!] Invalid URL Format! Enter A Valid URL\n" . $cln;
-    goto thephuckinstart;
+    goto thestart;
   }
 elseif (strpos($ip, ' ') !== false)
   {
     echo $bold . $red . "\n[!] Invalid URL Format! Enter A Valid URL\n" . $cln;
-    goto thephuckinstart;
+    goto thestart;
   }
 else
   {
@@ -169,7 +169,7 @@ askscan:
       {
         if ($scan == "15")
           {
-            goto thephuckinstart;
+            goto thestart;
           }
         elseif ($scan == 'q' | $scan == 'Q')
           {
@@ -179,7 +179,7 @@ askscan:
         elseif ($scan == 'b' || $scan == 'B')
           {
             system("clear");
-            goto thephuckinstart;
+            goto thestart;
           }
         // elseif ($scan == 'v' || $scan == 'V')
         //   {
@@ -222,6 +222,11 @@ askscan:
             echo "\n$cln" . "$lyellow" . "[+] Scanning Begins ... \n";
             echo "$blue" . "[i] Scanning Site:\e[92m $ipsl" . "$ip \n";
             echo "\n\n";
+            
+            // Ask user if they want to save results
+            userinput("Save scan results to file? (y/n) ");
+            $saveResults = trim(fgets(STDIN, 1024));
+            $saveResults = ($saveResults == 'y' || $saveResults == 'Y');
 
             echo "\n$bold" . "$lblue" . "B A S I C   I N F O \n";
             echo "--------------->\n";
@@ -231,33 +236,60 @@ askscan:
             $srccd    = file_get_contents($reallink);
             $lwwww    = str_replace("www.", "", $ip);
 
+            $siteTitle = getTitle($reallink);
             echo "\n$yellow" . "[+] Site Title: ";
             echo "\e[92m";
-            echo getTitle($reallink);
+            echo $siteTitle;
             echo "\e[0m";
+            
+            if ($saveResults) {
+                saveScanResults("Site Title: $siteTitle");
+            }
 
             echo "\n$yellow" . "[+] Social Links: \n";
-            extract_social_links($srccd);
+            $socialLinks = extract_social_links($srccd);
+            if ($saveResults) {
+                saveScanResults("Social Links:\n$socialLinks");
+            }
 
             $wip = gethostbyname($ip);
             echo "\n$yellow" . "[+] IP address: ";
             echo "\e[92m";
             echo $wip . "\n\e[0m";
+            
+            if ($saveResults) {
+                saveScanResults("IP Address: $wip");
+            }
 
-            echo "$yellow" . "[+] Web Server: ";
-            WEBserver($reallink);
+            $webServer = WEBserver($reallink);
+            echo "$yellow" . "\n[+] Web Server: ";
+            echo $webServer;
             echo "\n";
+            
+            if ($saveResults) {
+                saveScanResults("Web Server: $webServer");
+            }
 
-            echo "$yellow" . "[+] CMS: \e[92m" . CMSdetect($reallink) . " \e[0m";
+            $cms = CMSdetect($reallink);
+            echo "$yellow" . "[+] CMS: \e[92m" . $cms . " \e[0m";
+            
+            if ($saveResults) {
+                saveScanResults("CMS: $cms");
+            }
 
-            // echo "\n$yellow" . "[+] SimilarWeb Rank: ";
-            // echo "\e[92m" . get_similarweb_rank($reallink) . "\e[0m";
+            echo "\n$yellow" . "[+] SimilarWeb Rank: ";
+            echo "\e[92m" . get_similarweb_rank($reallink) . "\e[0m";
 
             echo "\n$yellow" . "[+] Cloudflare: ";
             cloudflaredetect($reallink);
 
+            $robots = robotsdottxt($reallink);
             echo "$yellow" . "[+] Robots File:$cln ";
-            robotsdottxt($reallink);
+            echo $robots;
+            
+            if ($saveResults) {
+                saveScanResults("Robots File:\n$robots");
+            }
             echo "\n\n$cln";
             echo "\n\n$bold" . $lblue . "W H O I S   L O O K U P\n";
             echo "--------------->";
@@ -404,7 +436,7 @@ vuln:
               echo "\n$cln";
 
               // RFI/LFI Scan
-              echo "\n$yellow [RFI/LFI Scan]";
+              echo "\n$yellow [RFI scan]";
               
               foreach ($rfi_payloads as $payload) {
                   $test_url = $lulzurl . "?file=" . urlencode($payload);
@@ -415,6 +447,8 @@ vuln:
                       echo "\n$green [-] No RFI Vulnerability Detected";
                   }
               }
+
+              echo "\n$yellow [LFI scan]";
               foreach ($lfi_payloads as $payload) {
                   $test_url = $lulzurl . "?file=" . urlencode($payload);
                   $response = file_get_contents($test_url);
@@ -652,7 +686,7 @@ csel:
                     echo "\n File Not Found, Aborting Crawl ....\n";
                   }
               }
-            elseif ($ctype == "A" || $ctype == "a")
+            elseif ($ctype == "a" || $ctype == "A")
               {
                 echo "\n\t -[ B A S I C   C R A W L I N G ]-\n";
                 echo "\n\n";
