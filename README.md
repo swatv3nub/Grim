@@ -66,8 +66,8 @@ All scans provide color-coded results:
 
 ## To-Do
 - Improve crawling functionality
-~~- Rework SQL injection detection scan.~~
-~~- Add a feature to save the scan results to a file / database~~
+- ~~Rework SQL injection detection scan.~~
+- ~~Add a feature to save the scan results to a file / database~~
 - Improve the user interface for the admin panel discovery
 - Improve the user interface for the backup file discovery
 
