@@ -355,6 +355,6 @@ This tool is designed for **educational purposes** and **authorized security tes
 
 ---
 
-**Made with ❤️ by the GRIM Security Team**
+**Made with ❤️ by the Swanit Anuran [MaskedVirus]**
 
 *Empowering security professionals with advanced scanning capabilities*

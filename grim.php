@@ -5,7 +5,7 @@
  * GRIM Security Scanner v3.0.0
  * Advanced Information Gathering and Vulnerability Scanning Tool
  * 
- * @author GRIM Security Team
+ * @author Swanit Anuran [MaskedVirus]
  * @license GPL-3.0
  */
 
