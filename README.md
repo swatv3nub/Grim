@@ -66,8 +66,8 @@
 ### Quick Install
 ```bash
 # Clone the repository
-git clone https://github.com/grim-security/grim-scanner.git
-cd grim-scanner
+git clone https://github.com/swatv3nub/grim.git
+cd grim
 
 # Install dependencies
 composer install
@@ -171,7 +171,7 @@ php grim-new.php list
 ## 📁 Project Structure
 
 ```
-grim-scanner/
+grim/
 ├── src/                          # Source code
 │   ├── Command/                  # CLI commands
 │   ├── Config/                   # Configuration management
@@ -293,8 +293,8 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 ### Development Setup
 ```bash
 # Fork and clone the repository
-git clone https://github.com/your-username/grim-scanner.git
-cd grim-scanner
+git clone https://github.com/your-username/grim.git
+cd grim
 
 # Install development dependencies
 composer install --dev
@@ -329,9 +329,9 @@ This tool is designed for **educational purposes** and **authorized security tes
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/grim-security/grim-scanner/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/grim-security/grim-scanner/discussions)
-- **Wiki**: [GitHub Wiki](https://github.com/grim-security/grim-scanner/wiki)
+- **Issues**: [GitHub Issues](https://github.com/swatv3nub/grim/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/swatv3nub/grim/discussions)
+- **Wiki**: [GitHub Wiki](https://github.com/swatv3nub/grim/wiki)
 
 ## 🔄 Changelog
 

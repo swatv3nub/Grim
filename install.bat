@@ -190,7 +190,7 @@ echo 3. Start scanning: php grim-new.php scan --target example.com
 echo.
 echo %BLUE%Documentation:%NC%
 echo README-NEW.md - Complete documentation
-echo https://github.com/grim-security/grim-scanner
+echo https://github.com/swatv3nub/grim
 echo.
 exit /b 0
 

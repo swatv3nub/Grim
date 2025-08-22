@@ -18,7 +18,7 @@ class UpdateCommand extends Command
     private Logger $logger;
     private HttpClient $httpClient;
     private string $currentVersion;
-    private string $updateUrl = 'https://api.github.com/repos/grim-security/grim-scanner/releases/latest';
+    private string $updateUrl = 'https://api.github.com/repos/swatv3nub/grim/releases/latest';
 
     public function __construct()
     {
@@ -244,7 +244,7 @@ class UpdateCommand extends Command
     {
         $io->text("Downloading update package...");
         
-        $downloadUrl = "https://github.com/grim-security/grim-scanner/releases/download/v{$version}/grim-scanner-{$version}.zip";
+        $downloadUrl = "https://github.com/swatv3nub/grim/releases/download/v{$version}/grim-{$version}.zip";
         $tempFile = sys_get_temp_dir() . '/grim-update-' . $version . '.zip';
         
         $response = $this->httpClient->get($downloadUrl);

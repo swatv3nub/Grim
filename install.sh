@@ -197,7 +197,7 @@ display_completion() {
     echo ""
     echo -e "${BLUE}Documentation:${NC}"
     echo "README-NEW.md - Complete documentation"
-    echo "https://github.com/grim-security/grim-scanner"
+    echo "https://github.com/swatv3nub/grim"
     echo ""
 }
 

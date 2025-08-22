@@ -16,8 +16,8 @@
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/grim-security/grim-scanner.git
-cd grim-scanner
+git clone https://github.com/swatv3nub/grim.git
+cd grim
 ```
 
 ### 2. Install Dependencies
