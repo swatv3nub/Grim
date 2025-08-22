@@ -1,0 +1,47 @@
+# Environment files
+.env
+.env.local
+.env.production
+
+# Composer
+/vendor/
+composer.lock
+
+# Logs
+/logs/*
+!logs/.gitkeep
+
+# Results
+/results/*
+!results/.gitkeep
+
+# Backups
+/backups/*
+!backups/.gitkeep
+
+# Cache
+.phpunit.cache/
+.phpstan.cache/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Test coverage
+/coverage/
+
+# Build artifacts
+/build/
+/dist/
