@@ -1,4 +1,4 @@
-# GRIM Security Scanner v3.0.0
+# GRIM Security Scanner v4.0.0
 
 🔒 **Advanced Information Gathering and Vulnerability Scanning Tool**
 
@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/badge/License-GPL--3.0-green.svg)](https://opensource.org/licenses/GPL-3.0)
 [![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg)](https://github.com/swatv3nub/Grim)
 
-## 🚀 What's New in v3.0.0
+## 🚀 What's New in v4.0.0
 
 - **Modern PHP Architecture**: Complete rewrite using PHP 8.0+ features
 - **Object-Oriented Design**: Clean, maintainable code with proper separation of concerns
@@ -335,7 +335,7 @@ This tool is designed for **educational purposes** and **authorized security tes
 
 ## 🔄 Changelog
 
-### v3.0.0 (2024-01-15)
+### v4.0.0 (2035-08-22)
 - Complete codebase rewrite
 - Modern PHP 8.0+ architecture
 - Composer integration
@@ -347,7 +347,7 @@ This tool is designed for **educational purposes** and **authorized security tes
 - Error handling improvements
 - Testing framework
 
-### v2.0.0 (Previous)
+### v3.0.0 (Previous)
 - Basic vulnerability scanning
 - Information gathering
 - Web crawling

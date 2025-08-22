@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# GRIM Security Scanner v3.0.0 Installation Script
+# GRIM Security Scanner v4.0.0 Installation Script
 # This script will help you install and configure GRIM
 
 set -e
@@ -186,7 +186,7 @@ run_tests() {
 display_completion() {
     echo ""
     echo -e "${GREEN}========================================${NC}"
-    echo -e "${GREEN}  GRIM Security Scanner v3.0.0${NC}"
+    echo -e "${GREEN}  GRIM Security Scanner v4.0.0${NC}"
     echo -e "${GREEN}  Installation Completed!${NC}"
     echo -e "${GREEN}========================================${NC}"
     echo ""
@@ -204,7 +204,7 @@ display_completion() {
 # Main installation function
 main() {
     echo -e "${BLUE}========================================${NC}"
-    echo -e "${BLUE}  GRIM Security Scanner v3.0.0${NC}"
+    echo -e "${BLUE}  GRIM Security Scanner v4.0.0${NC}"
     echo -e "${BLUE}  Installation Script${NC}"
     echo -e "${BLUE}========================================${NC}"
     echo ""

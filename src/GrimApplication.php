@@ -102,7 +102,7 @@ class GrimApplication extends Application
          \__.       \/^\/       .__/                         |
           V| \                 / |V                          v
            | |T~\___!___!___/~T| |           
-           | |`IIII_I_I_I_IIII'| |           Advanced Security Scanner v3.0.0
+           | |`IIII_I_I_I_IIII'| |           Advanced Security Scanner v4.0.0
            |  \,III I I I III,/  |           
             \   `~~~~~~~~~~'    /            
               \   .       .   /              

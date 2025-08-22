@@ -2,7 +2,7 @@
 <?php
 
 /**
- * GRIM Security Scanner v3.0.0
+ * GRIM Security Scanner v4.0.0
  * Advanced Information Gathering and Vulnerability Scanning Tool
  * 
  * @author Swanit Anuran [MaskedVirus]
