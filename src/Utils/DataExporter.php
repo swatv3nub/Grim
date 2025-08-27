@@ -22,7 +22,7 @@ class DataExporter
         }
     }
 
-    public function exportToJson(array $data, string $filename = null): string
+    public function exportToJson(array $data, ?string $filename = null): string
     {
         $filename = $filename ?: 'grim_scan_' . date('Y-m-d_H-i-s');
         $filepath = $this->resultsDir . $filename . '.json';
@@ -40,7 +40,7 @@ class DataExporter
         return $filepath;
     }
 
-    public function exportToCsv(array $data, string $filename = null): string
+    public function exportToCsv(array $data, ?string $filename = null): string
     {
         $filename = $filename ?: 'grim_scan_' . date('Y-m-d_H-i-s');
         $filepath = $this->resultsDir . $filename . '.csv';
@@ -53,7 +53,7 @@ class DataExporter
         return $filepath;
     }
 
-    public function exportToHtml(array $data, string $filename = null): string
+    public function exportToHtml(array $data, ?string $filename = null): string
     {
         $filename = $filename ?: 'grim_scan_' . date('Y-m-d_H-i-s');
         $filepath = $this->resultsDir . $filename . '.html';
@@ -66,7 +66,7 @@ class DataExporter
         return $filepath;
     }
 
-    public function exportToXml(array $data, string $filename = null): string
+    public function exportToXml(array $data, ?string $filename = null): string
     {
         $filename = $filename ?: 'grim_scan_' . date('Y-m-d_H-i-s');
         $filepath = $this->resultsDir . $filename . '.xml';
@@ -79,7 +79,7 @@ class DataExporter
         return $filepath;
     }
 
-    public function exportToMarkdown(array $data, string $filename = null): string
+    public function exportToMarkdown(array $data, ?string $filename = null): string
     {
         $filename = $filename ?: 'grim_scan_' . date('Y-m-d_H-i-s');
         $filepath = $this->resultsDir . $filename . '.md';
@@ -474,7 +474,7 @@ class DataExporter
         return ['json', 'csv', 'html', 'xml', 'markdown'];
     }
 
-    public function exportToAllFormats(array $data, string $filename = null): array
+    public function exportToAllFormats(array $data, ?string $filename = null): array
     {
         $exportedFiles = [];
         

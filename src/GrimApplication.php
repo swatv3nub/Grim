@@ -36,7 +36,7 @@ class GrimApplication extends Application
         ]);
     }
 
-    public function run(InputInterface $input = null, OutputInterface $output = null): int
+    public function run(?InputInterface $input = null, ?OutputInterface $output = null): int
     {
         $this->logger->info("GRIM Security Scanner started", ['version' => '3.0.0']);
         
@@ -226,7 +226,7 @@ class GrimApplication extends Application
         }
     }
 
-    public function exportResults(string $format = 'json', string $filename = null): string
+    public function exportResults(string $format = 'json', ?string $filename = null): string
     {
         if (empty($this->scanResults)) {
             throw new \RuntimeException("No scan results to export");

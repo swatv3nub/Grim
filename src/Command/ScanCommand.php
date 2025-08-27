@@ -24,7 +24,6 @@ class ScanCommand extends Command
             ->addOption('no-crawl', null, InputOption::VALUE_NONE, 'Disable crawling')
             ->addOption('export', 'e', InputOption::VALUE_OPTIONAL, 'Export format (json, csv, html)', 'json')
             ->addOption('output', 'o', InputOption::VALUE_OPTIONAL, 'Output filename (without extension)')
-            ->addOption('verbose', 'v', InputOption::VALUE_NONE, 'Enable verbose output')
             ->addOption('timeout', null, InputOption::VALUE_OPTIONAL, 'Request timeout in seconds', 30)
             ->addOption('delay', null, InputOption::VALUE_OPTIONAL, 'Delay between requests in seconds', 1);
     }

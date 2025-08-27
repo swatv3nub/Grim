@@ -32,12 +32,12 @@ class VulnCommand extends Command
             ->addArgument('target', null, 'Target URL to scan for vulnerabilities')
             ->addOption('output', 'o', InputOption::VALUE_REQUIRED, 'Output format (json, csv, html)', 'json')
             ->addOption('file', 'f', InputOption::VALUE_REQUIRED, 'Output filename')
-            ->addOption('verbose', 'v', InputOption::VALUE_NONE, 'Verbose output')
             ->addOption('timeout', 't', InputOption::VALUE_REQUIRED, 'Request timeout in seconds', '30')
             ->addOption('user-agent', 'u', InputOption::VALUE_REQUIRED, 'Custom User-Agent string')
             ->addOption('level', 'l', InputOption::VALUE_REQUIRED, 'Scan level (low, medium, high, critical)', 'medium')
             ->addOption('skip-ssl-verify', null, InputOption::VALUE_NONE, 'Skip SSL certificate verification')
             ->addOption('max-requests', 'm', InputOption::VALUE_REQUIRED, 'Maximum requests per second', '10')
+            ->addOption('verbose', 'v', InputOption::VALUE_NONE, 'Enable verbose output')
             ->setHelp('This command performs comprehensive vulnerability scanning on a target including SQL injection, XSS, CSRF, and more.');
     }
 

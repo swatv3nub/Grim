@@ -34,7 +34,6 @@ class CrawlCommand extends Command
             ->addArgument('target', null, 'Target URL to crawl')
             ->addOption('output', 'o', InputOption::VALUE_REQUIRED, 'Output format (json, csv, html)', 'json')
             ->addOption('file', 'f', InputOption::VALUE_REQUIRED, 'Output filename')
-            ->addOption('verbose', 'v', InputOption::VALUE_NONE, 'Verbose output')
             ->addOption('timeout', 't', InputOption::VALUE_REQUIRED, 'Request timeout in seconds', '30')
             ->addOption('user-agent', 'u', InputOption::VALUE_REQUIRED, 'Custom User-Agent string')
             ->addOption('threads', null, InputOption::VALUE_REQUIRED, 'Number of concurrent threads', '10')
