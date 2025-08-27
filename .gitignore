@@ -1,3 +1,5 @@
+# Tests
+tests/
 # Environment files
 .env
 .env.local
@@ -45,3 +47,4 @@ Thumbs.db
 # Build artifacts
 /build/
 /dist/
+
