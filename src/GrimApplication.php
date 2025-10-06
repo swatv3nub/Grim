@@ -21,25 +21,44 @@ class GrimApplication extends Application
 
     public function __construct()
     {
-        parent::__construct('GRIM Security Scanner', '3.0.0');
+        parent::__construct('GRIM Security Scanner', '5.0.0');
         $this->config = ConfigManager::getInstance();
         $this->logger = Logger::getInstance();
         $this->httpClient = new HttpClient();
-        
+
         $this->addCommands([
             new Command\ScanCommand(),
             new Command\InfoCommand(),
             new Command\VulnCommand(),
             new Command\CrawlCommand(),
             new Command\ConfigCommand(),
-            new Command\UpdateCommand()
+            new Command\UpdateCommand(),
+            new Command\ContainerScanCommand(),
+            new Command\CloudScanCommand(),
+            new Command\SelfUpdateCommand(),
+            new Command\ResultHistoryCommand(),
+            new Command\ExportSIEMCommand()
         ]);
+
+        // Load plugins (example)
+        if (class_exists('Grim\\Utils\\PluginLoader')) {
+            $plugins = \Grim\Utils\PluginLoader::loadPlugins();
+            foreach ($plugins as $plugin) {
+                // Optionally register plugin commands or hooks here
+                $this->logger->info('Loaded plugin: ' . $plugin->getName());
+            }
+        }
+
+        // Set default language for i18n
+        if (class_exists('Grim\\Utils\\Translator')) {
+            \Grim\Utils\Translator::setLang('en'); // Change to 'es' for Spanish, etc.
+        }
     }
 
     public function run(?InputInterface $input = null, ?OutputInterface $output = null): int
     {
-        $this->logger->info("GRIM Security Scanner started", ['version' => '3.0.0']);
-        
+        $this->logger->info("GRIM Security Scanner started", ['version' => '5.0.0']);
+
         // Check system requirements
         if (!$this->checkSystemRequirements()) {
             $this->logger->error("System requirements not met");
@@ -48,7 +67,7 @@ class GrimApplication extends Application
 
         // Display banner
         $this->displayBanner();
-        
+
         return parent::run($input, $output);
     }
 
@@ -102,7 +121,7 @@ class GrimApplication extends Application
          \__.       \/^\/       .__/                         |
           V| \                 / |V                          v
            | |T~\___!___!___/~T| |           
-           | |`IIII_I_I_I_IIII'| |           Advanced Security Scanner v4.0.0
+           | |`IIII_I_I_I_IIII'| |           Advanced Security Scanner v5.0.0
            |  \,III I I I III,/  |           
             \   `~~~~~~~~~~'    /            
               \   .       .   /              
@@ -117,7 +136,7 @@ class GrimApplication extends Application
     public function runFullScan(string $targetUrl, bool $enableVulnScan = true, bool $enableInfoGathering = true, bool $enableCrawling = true): array
     {
         $this->logger->info("Starting full scan", ['target' => $targetUrl]);
-        
+
         $results = [
             'target' => $targetUrl,
             'scan_start' => date('Y-m-d H:i:s'),
@@ -147,25 +166,34 @@ class GrimApplication extends Application
                 $crawlResults = $this->runCrawler($targetUrl);
                 $results['scanners']['crawling'] = $crawlResults;
             }
-
         } catch (\Exception $e) {
             $this->logger->error("Error during scan", [
                 'target' => $targetUrl,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             $results['error'] = $e->getMessage();
         }
 
         $results['scan_end'] = date('Y-m-d H:i:s');
         $results['duration'] = $this->calculateScanDuration($results['scan_start'], $results['scan_end']);
-        
+
         $this->scanResults = $results;
         $this->logger->info("Full scan completed", [
             'target' => $targetUrl,
             'duration' => $results['duration']
         ]);
+
+        // Log results to SQLite history
+        if (class_exists('Grim\\Utils\\ResultLogger')) {
+            try {
+                $logger = new \Grim\Utils\ResultLogger();
+                $logger->logResult($targetUrl, $results);
+            } catch (\Exception $e) {
+                $this->logger->warning('Failed to log scan result: ' . $e->getMessage());
+            }
+        }
 
         return $results;
     }
@@ -188,13 +216,13 @@ class GrimApplication extends Application
             if (file_exists($file)) {
                 $content = file_get_contents($file);
                 $paths = explode(',', $content);
-                
+
                 foreach ($paths as $path) {
                     $path = trim($path);
                     if (!empty($path)) {
                         $testUrl = $targetUrl . '/' . $path;
                         $response = $this->httpClient->get($testUrl);
-                        
+
                         if ($response) {
                             $crawlResults[$type][] = [
                                 'path' => $path,
@@ -216,7 +244,7 @@ class GrimApplication extends Application
         $startTime = strtotime($start);
         $endTime = strtotime($end);
         $duration = $endTime - $startTime;
-        
+
         if ($duration < 60) {
             return $duration . ' seconds';
         } elseif ($duration < 3600) {
@@ -234,7 +262,7 @@ class GrimApplication extends Application
 
         $filename = $filename ?: 'grim_scan_' . date('Y-m-d_H-i-s');
         $resultsDir = $this->config->get('scanner.results_dir', 'results/');
-        
+
         if (!is_dir($resultsDir)) {
             mkdir($resultsDir, 0755, true);
         }
@@ -244,24 +272,24 @@ class GrimApplication extends Application
                 $content = json_encode($this->scanResults, JSON_PRETTY_PRINT);
                 $extension = 'json';
                 break;
-                
+
             case 'csv':
                 $content = $this->convertToCsv($this->scanResults);
                 $extension = 'csv';
                 break;
-                
+
             case 'html':
                 $content = $this->convertToHtml($this->scanResults);
                 $extension = 'html';
                 break;
-                
+
             default:
                 throw new \InvalidArgumentException("Unsupported export format: {$format}");
         }
 
         $filepath = $resultsDir . $filename . '.' . $extension;
         file_put_contents($filepath, $content);
-        
+
         $this->logger->info("Results exported", [
             'format' => $format,
             'filepath' => $filepath
@@ -273,7 +301,7 @@ class GrimApplication extends Application
     private function convertToCsv(array $data): string
     {
         $csv = "Key,Value\n";
-        
+
         foreach ($data as $key => $value) {
             if (is_array($value)) {
                 $csv .= $key . "," . json_encode($value) . "\n";
@@ -281,7 +309,7 @@ class GrimApplication extends Application
                 $csv .= $key . "," . $value . "\n";
             }
         }
-        
+
         return $csv;
     }
 
@@ -304,16 +332,16 @@ class GrimApplication extends Application
         $html .= "<p><strong>End Time:</strong> " . htmlspecialchars($data['scan_end']) . "</p>\n";
         $html .= "<p><strong>Duration:</strong> " . htmlspecialchars($data['duration']) . "</p>\n";
         $html .= "</div>\n";
-        
+
         foreach ($data['scanners'] as $scanner => $results) {
             $html .= "<div class='section'>\n";
             $html .= "<h2>" . ucfirst(str_replace('_', ' ', $scanner)) . "</h2>\n";
             $html .= "<pre>" . htmlspecialchars(json_encode($results, JSON_PRETTY_PRINT)) . "</pre>\n";
             $html .= "</div>\n";
         }
-        
+
         $html .= "</body>\n</html>";
-        
+
         return $html;
     }
 

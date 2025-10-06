@@ -1,4 +1,4 @@
-# GRIM Security Scanner v4.0.0
+# GRIM Security Scanner v5.0.0
 
 🔒 **Advanced Information Gathering and Vulnerability Scanning Tool**
 
@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/badge/License-GPL--3.0-green.svg)](https://opensource.org/licenses/GPL-3.0)
 [![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg)](https://github.com/swatv3nub/Grim)
 
-## 🚀 What's New in v4.0.0
+## 🚀 What's New in v5.0.0
 
 - **Modern PHP Architecture**: Complete rewrite using PHP 8.0+ features
 - **Object-Oriented Design**: Clean, maintainable code with proper separation of concerns
@@ -137,42 +137,86 @@ LOG_FILE=logs/grim.log
 php grim-new.php scan --target example.com
 
 # Run with custom options
-php grim-new.php scan \
+php grim.php scan --target example.com
+  --target example.com \
+  --export html \
+php grim.php scan \
   --target example.com \
   --export html \
   --output my_scan \
   --verbose
-```
-
-### Scan Options
 ```bash
 # Disable specific scanners
 php grim-new.php scan --target example.com --no-vuln --no-crawl
 
 # Custom timeout and delay
-php grim-new.php scan --target example.com --timeout 60 --delay 2
+php grim.php scan --target example.com --no-vuln --no-crawl
 
 # Export to multiple formats
-php grim-new.php scan --target example.com --export all
+php grim.php scan --target example.com --timeout 60 --delay 2
 ```
 
-### Command Reference
+php grim.php scan --target example.com --export all
 ```bash
 # Show help
 php grim-new.php --help
 
 # Show scan command help
-php grim-new.php scan --help
+php grim.php --help
 
 # List available commands
-php grim-new.php list
+php grim.php scan --help
 ```
 
-## 📁 Project Structure
+php grim.php list
 
+
+### Cloud Asset Scanning
+```bash
+# Scan all AWS assets
+php grim.php cloud-scan aws
+# Scan a specific Azure asset
+php grim.php cloud-scan azure vm-az-demo-1
+# Scan all GCP assets
+php grim.php cloud-scan gcp
+```
+
+### Container Image Scanning
+```bash
+# Scan a Docker image for vulnerabilities
+php grim.php container-scan nginx:latest
+```
+
+### Plugin System
+```bash
+# List loaded plugins (see logs or plugin output)
+# Plugins are loaded automatically from the plugins/ directory
+```
+
+### Internationalization (i18n)
+```php
 ```
 grim/
 ├── src/                          # Source code
+```
+
+### SIEM/Log Export
+```bash
+# Export a scan result to Splunk
+php grim.php export:siem 1 splunk
+# Export to ELK
+php grim.php export:siem 1 elk
+# Export to Graylog
+php grim.php export:siem 1 graylog
+```
+
+### Result History & Reporting
+```bash
+# List all past scan results
+php grim.php results
+# View details for a specific result
+php grim.php results 1
+```
 │   ├── Command/                  # CLI commands
 │   ├── Config/                   # Configuration management
 │   ├── Scanner/                  # Scanner implementations
@@ -335,7 +379,7 @@ This tool is designed for **educational purposes** and **authorized security tes
 
 ## 🔄 Changelog
 
-### v4.0.0 (2035-08-22)
+### v5.0.0 (2035-08-22)
 - Complete codebase rewrite
 - Modern PHP 8.0+ architecture
 - Composer integration
@@ -347,7 +391,7 @@ This tool is designed for **educational purposes** and **authorized security tes
 - Error handling improvements
 - Testing framework
 
-### v3.0.0 (Previous)
+### v5.0.0 (Previous)
 - Basic vulnerability scanning
 - Information gathering
 - Web crawling

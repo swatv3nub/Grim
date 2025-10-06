@@ -63,12 +63,12 @@ class InfoCommand extends Command
 
             // Initialize scanner
             $scanner = new InformationGatheringScanner($target, $input->getOption('verbose'));
-            
+
             // Set options
             if ($input->getOption('timeout')) {
                 $scanner->setTimeout((int) $input->getOption('timeout'));
             }
-            
+
             if ($input->getOption('user-agent')) {
                 $scanner->setUserAgent($input->getOption('user-agent'));
             }
@@ -84,7 +84,7 @@ class InfoCommand extends Command
             if ($input->getOption('output') || $input->getOption('file')) {
                 $format = $input->getOption('output');
                 $filename = $input->getOption('file') ?: 'grim_info_' . date('Y-m-d_H-i-s');
-                
+
                 $exportPath = $this->exporter->export($results, $format, $filename);
                 $io->success("Results exported to: {$exportPath}");
             }
@@ -95,7 +95,6 @@ class InfoCommand extends Command
             ]);
 
             return Command::SUCCESS;
-
         } catch (\Exception $e) {
             $io->error("Scan failed: " . $e->getMessage());
             $this->logger->error("Information gathering failed", [
@@ -116,10 +115,12 @@ class InfoCommand extends Command
         }
 
         foreach ($results as $category => $data) {
-            if (empty($data)) continue;
+            if (empty($data)) {
+                continue;
+            }
 
             $io->text("<comment>{$category}:</comment>");
-            
+
             if (is_array($data)) {
                 foreach ($data as $key => $value) {
                     if (is_array($value)) {

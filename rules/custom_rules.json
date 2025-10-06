@@ -1,0 +1,7 @@
+[
+    {
+        "id": "custom-xss",
+        "pattern": "<script>",
+        "description": "Detects inline script tags (possible XSS)"
+    }
+]

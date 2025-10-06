@@ -1,5 +1,5 @@
 @echo off
-REM GRIM Security Scanner v4.0.0 Installation Script for Windows
+REM GRIM Security Scanner v5.0.0 Installation Script for Windows
 REM This script will help you install and configure GRIM on Windows
 
 setlocal enabledelayedexpansion
@@ -179,7 +179,7 @@ REM Function to display completion message
 :display_completion
 echo.
 echo %GREEN%========================================%NC%
-echo %GREEN%  GRIM Security Scanner v4.0.0%NC%
+echo %GREEN%  GRIM Security Scanner v5.0.0%NC%
 echo %GREEN%  Installation Completed!%NC%
 echo %GREEN%========================================%NC%
 echo.
@@ -197,7 +197,7 @@ exit /b 0
 REM Main installation function
 :main
 echo %BLUE%========================================%NC%
-echo %BLUE%  GRIM Security Scanner v4.0.0%NC%
+echo %BLUE%  GRIM Security Scanner v5.0.0%NC%
 echo %BLUE%  Installation Script for Windows%NC%
 echo %BLUE%========================================%NC%
 echo.

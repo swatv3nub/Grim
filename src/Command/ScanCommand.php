@@ -83,7 +83,7 @@ class ScanCommand extends Command
         try {
             // Initialize application
             $app = new GrimApplication();
-            
+
             // Run the scan
             $io->section('Running Scan');
             $progressBar = $io->createProgressBar();
@@ -105,7 +105,7 @@ class ScanCommand extends Command
             // Export results if requested
             $exportFormat = $input->getOption('export');
             $outputFile = $input->getOption('output');
-            
+
             if ($exportFormat) {
                 $io->section('Exporting Results');
                 try {
@@ -118,7 +118,6 @@ class ScanCommand extends Command
 
             $io->success('Scan completed successfully!');
             return Command::SUCCESS;
-
         } catch (\Exception $e) {
             $logger->error('Scan failed', [
                 'target' => $target,
@@ -138,30 +137,30 @@ class ScanCommand extends Command
     private function validateTarget(string $target): bool
     {
         $target = trim($target);
-        
+
         // Remove protocol if present
         $target = preg_replace('/^https?:\/\//', '', $target);
-        
+
         // Basic domain validation
         if (empty($target) || strpos($target, ' ') !== false) {
             return false;
         }
-        
+
         // Check if it's a valid domain or IP
         if (filter_var($target, FILTER_VALIDATE_DOMAIN) || filter_var($target, FILTER_VALIDATE_IP)) {
             return true;
         }
-        
+
         return false;
     }
 
     private function normalizeTarget(string $target): string
     {
         $target = trim($target);
-        
+
         // Remove protocol if present
         $target = preg_replace('/^https?:\/\//', '', $target);
-        
+
         // Add http protocol
         return 'http://' . $target;
     }
@@ -169,7 +168,7 @@ class ScanCommand extends Command
     private function displayResultsSummary(SymfonyStyle $io, array $results): void
     {
         $io->section('Scan Results Summary');
-        
+
         // Basic info
         $io->table(
             ['Property', 'Value'],
@@ -185,12 +184,12 @@ class ScanCommand extends Command
         if (isset($results['scanners'])) {
             foreach ($results['scanners'] as $scanner => $scannerResults) {
                 $io->text("\n<info>" . ucfirst(str_replace('_', ' ', $scanner)) . ":</info>");
-                
+
                 if (is_array($scannerResults)) {
                     if (isset($scannerResults['basic'])) {
                         $io->text("  • Basic information gathered");
                     }
-                    
+
                     if (isset($scannerResults['technology'])) {
                         $tech = $scannerResults['technology'];
                         if ($tech['web_server']) {
@@ -200,13 +199,13 @@ class ScanCommand extends Command
                             $io->text("  • CMS: " . $tech['cms']);
                         }
                     }
-                    
+
                     // Count vulnerabilities if present
                     if (isset($scannerResults[0]['severity'])) {
                         $vulnCount = count(array_filter($scannerResults, fn($r) => $r['severity'] === 'vulnerability'));
                         $warningCount = count(array_filter($scannerResults, fn($r) => $r['severity'] === 'warning'));
                         $infoCount = count(array_filter($scannerResults, fn($r) => $r['severity'] === 'info'));
-                        
+
                         $io->text("  • Vulnerabilities found: <error>{$vulnCount}</error>");
                         $io->text("  • Warnings: <comment>{$warningCount}</comment>");
                         $io->text("  • Information items: <info>{$infoCount}</info>");

@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [ Alpha ]
+  pull_request:
+    branches: [ Alpha ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, curl, dom, json, zip
+          coverage: none
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+      - name: Run static analysis
+        run: composer analyze
+      - name: Run code style check
+        run: composer cs
+      - name: Run tests
+        run: composer test
+      - name: Run security audit
+        run: composer audit

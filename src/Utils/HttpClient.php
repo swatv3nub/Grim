@@ -21,7 +21,7 @@ class HttpClient
         $this->config = ConfigManager::getInstance();
         $this->logger = Logger::getInstance();
         $this->maxRequestsPerMinute = $this->config->get('security.max_requests_per_minute', 60);
-        
+
         $this->initializeClient();
     }
 
@@ -48,7 +48,7 @@ class HttpClient
                 $this->config->get('PROXY_HOST', '127.0.0.1'),
                 $this->config->get('PROXY_PORT', '8080')
             );
-            
+
             if ($this->config->get('PROXY_USER') && $this->config->get('PROXY_PASSWORD')) {
                 $clientConfig['proxy'] = sprintf(
                     'http://%s:%s@%s:%s',
@@ -67,15 +67,14 @@ class HttpClient
     {
         try {
             $this->checkRateLimit();
-            
+
             $response = $this->client->get($url, array_merge([
                 'timeout' => $this->config->get('scanner.timeout', 30)
             ], $options));
 
             $this->logger->info("GET request successful", ['url' => $url, 'status' => $response->getStatusCode()]);
-            
+
             return $response->getBody()->getContents();
-            
         } catch (RequestException $e) {
             $this->logger->error("HTTP request failed", [
                 'url' => $url,
@@ -109,16 +108,15 @@ class HttpClient
     {
         try {
             $this->checkRateLimit();
-            
+
             $response = $this->client->post($url, array_merge([
                 'form_params' => $data,
                 'timeout' => $this->config->get('scanner.timeout', 30)
             ], $options));
 
             $this->logger->info("POST request successful", ['url' => $url, 'status' => $response->getStatusCode()]);
-            
+
             return $response->getBody()->getContents();
-            
         } catch (\Exception $e) {
             $this->logger->error("POST request failed", [
                 'url' => $url,
@@ -132,15 +130,14 @@ class HttpClient
     {
         try {
             $this->checkRateLimit();
-            
+
             $response = $this->client->head($url, array_merge([
                 'timeout' => $this->config->get('scanner.timeout', 30)
             ], $options));
 
             $this->logger->info("HEAD request successful", ['url' => $url, 'status' => $response->getStatusCode()]);
-            
+
             return $response->getHeaders();
-            
         } catch (\Exception $e) {
             $this->logger->error("HEAD request failed", [
                 'url' => $url,
@@ -160,7 +157,7 @@ class HttpClient
         $minuteAgo = $currentTime - 60;
 
         // Clean old entries
-        $this->rateLimit = array_filter($this->rateLimit, function($timestamp) use ($minuteAgo) {
+        $this->rateLimit = array_filter($this->rateLimit, function ($timestamp) use ($minuteAgo) {
             return $timestamp > $minuteAgo;
         });
 

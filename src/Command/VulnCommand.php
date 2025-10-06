@@ -70,12 +70,12 @@ class VulnCommand extends Command
 
             // Initialize scanner
             $scanner = new VulnerabilityScanner($target, $input->getOption('verbose'));
-            
+
             // Set options
             if ($input->getOption('timeout')) {
                 $scanner->setTimeout((int) $input->getOption('timeout'));
             }
-            
+
             if ($input->getOption('user-agent')) {
                 $scanner->setUserAgent($input->getOption('user-agent'));
             }
@@ -101,7 +101,7 @@ class VulnCommand extends Command
             if ($input->getOption('output') || $input->getOption('file')) {
                 $format = $input->getOption('output');
                 $filename = $input->getOption('file') ?: 'grim_vuln_' . date('Y-m-d_H-i-s');
-                
+
                 $exportPath = $this->exporter->export($results, $format, $filename);
                 $io->success("Results exported to: {$exportPath}");
             }
@@ -112,7 +112,6 @@ class VulnCommand extends Command
             ]);
 
             return Command::SUCCESS;
-
         } catch (\Exception $e) {
             $io->error("Scan failed: " . $e->getMessage());
             $this->logger->error("Vulnerability scan failed", [
@@ -133,7 +132,7 @@ class VulnCommand extends Command
         }
 
         $vulnerabilities = $this->countVulnerabilities($results);
-        
+
         // Display summary
         $io->text("Vulnerabilities found:");
         $io->text("  Critical: <fg=red>{$vulnerabilities['critical']}</>");
@@ -145,24 +144,26 @@ class VulnCommand extends Command
 
         // Display detailed results
         foreach ($results as $category => $data) {
-            if (empty($data)) continue;
+            if (empty($data)) {
+                continue;
+            }
 
             $io->text("<comment>{$category}:</comment>");
-            
+
             if (is_array($data)) {
                 foreach ($data as $vuln) {
                     if (isset($vuln['severity']) && isset($vuln['description'])) {
                         $severityColor = $this->getSeverityColor($vuln['severity']);
                         $io->text("  [<{$severityColor}>{$vuln['severity']}</>] {$vuln['description']}");
-                        
+
                         if (isset($vuln['url'])) {
                             $io->text("    URL: {$vuln['url']}");
                         }
-                        
+
                         if (isset($vuln['payload'])) {
                             $io->text("    Payload: <fg=gray>{$vuln['payload']}</>");
                         }
-                        
+
                         if (isset($vuln['evidence'])) {
                             $io->text("    Evidence: <fg=gray>{$vuln['evidence']}</>");
                         }

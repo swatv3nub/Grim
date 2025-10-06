@@ -40,7 +40,7 @@ class InformationGatheringScanner extends Scanner
     public function scan(): array
     {
         $this->logger->info("Starting information gathering scan", ['target' => $this->targetUrl]);
-        
+
         $this->gatherBasicInfo();
         $this->gatherWhoisInfo();
         $this->gatherGeoIPInfo();
@@ -63,10 +63,10 @@ class InformationGatheringScanner extends Scanner
     private function gatherBasicInfo(): void
     {
         $this->logInfo("Gathering basic information");
-        
+
         $domain = $this->getDomainFromUrl($this->targetUrl);
         $ip = gethostbyname($domain);
-        
+
         $this->gatheredInfo['basic'] = [
             'domain' => $domain,
             'ip_address' => $ip,
@@ -85,12 +85,12 @@ class InformationGatheringScanner extends Scanner
         }
 
         $this->logInfo("Gathering WHOIS information");
-        
+
         $domain = $this->getDomainFromUrl($this->targetUrl);
         $url = $this->apis['viewdns']['base_url'] . "whois/v2/?domain={$domain}&apikey=" . $this->apis['viewdns']['key'];
-        
+
         $response = $this->httpClient->get($url);
-        
+
         if ($response) {
             $whoisData = json_decode($response, true);
             if ($whoisData) {
@@ -98,7 +98,7 @@ class InformationGatheringScanner extends Scanner
                 $this->addInfo('whois_info', 'WHOIS information gathered', $whoisData);
             }
         }
-        
+
         $this->randomDelay(1, 3);
     }
 
@@ -110,12 +110,12 @@ class InformationGatheringScanner extends Scanner
         }
 
         $this->logInfo("Gathering GeoIP information");
-        
+
         $ip = $this->gatheredInfo['basic']['ip_address'] ?? gethostbyname($this->getDomainFromUrl($this->targetUrl));
         $url = $this->apis['viewdns']['base_url'] . "iplocation/?domain={$ip}&apikey=" . $this->apis['viewdns']['key'];
-        
+
         $response = $this->httpClient->get($url);
-        
+
         if ($response) {
             $geoData = json_decode($response, true);
             if ($geoData) {
@@ -123,7 +123,7 @@ class InformationGatheringScanner extends Scanner
                 $this->addInfo('geoip_info', 'GeoIP information gathered', $geoData);
             }
         }
-        
+
         $this->randomDelay(1, 3);
     }
 
@@ -135,12 +135,12 @@ class InformationGatheringScanner extends Scanner
         }
 
         $this->logInfo("Gathering DNS information");
-        
+
         $domain = $this->getDomainFromUrl($this->targetUrl);
         $url = $this->apis['viewdns']['base_url'] . "dnsrecord/?domain={$domain}&apikey=" . $this->apis['viewdns']['key'];
-        
+
         $response = $this->httpClient->get($url);
-        
+
         if ($response) {
             $dnsData = json_decode($response, true);
             if ($dnsData) {
@@ -148,7 +148,7 @@ class InformationGatheringScanner extends Scanner
                 $this->addInfo('dns_info', 'DNS information gathered', $dnsData);
             }
         }
-        
+
         $this->randomDelay(1, 3);
     }
 
@@ -160,12 +160,12 @@ class InformationGatheringScanner extends Scanner
         }
 
         $this->logInfo("Gathering subdomain information");
-        
+
         $ip = $this->gatheredInfo['basic']['ip_address'] ?? gethostbyname($this->getDomainFromUrl($this->targetUrl));
         $url = $this->apis['viewdns']['base_url'] . "reversedns/?ip={$ip}&apikey=" . $this->apis['viewdns']['key'];
-        
+
         $response = $this->httpClient->get($url);
-        
+
         if ($response) {
             $subdomainData = json_decode($response, true);
             if ($subdomainData) {
@@ -173,7 +173,7 @@ class InformationGatheringScanner extends Scanner
                 $this->addInfo('subdomain_info', 'Subdomain information gathered', $subdomainData);
             }
         }
-        
+
         $this->randomDelay(1, 3);
     }
 
@@ -185,12 +185,12 @@ class InformationGatheringScanner extends Scanner
         }
 
         $this->logInfo("Gathering port information");
-        
+
         $domain = $this->getDomainFromUrl($this->targetUrl);
         $url = $this->apis['viewdns']['base_url'] . "portscan/?host={$domain}&apikey=" . $this->apis['viewdns']['key'];
-        
+
         $response = $this->httpClient->get($url);
-        
+
         if ($response) {
             $portData = json_decode($response, true);
             if ($portData) {
@@ -198,16 +198,16 @@ class InformationGatheringScanner extends Scanner
                 $this->addInfo('port_info', 'Port information gathered', $portData);
             }
         }
-        
+
         $this->randomDelay(1, 3);
     }
 
     private function gatherTechnologyInfo(): void
     {
         $this->logInfo("Gathering technology information");
-        
+
         $response = $this->httpClient->get($this->targetUrl);
-        
+
         if ($response) {
             $techInfo = $this->extractTechnologyInfo($response);
             $this->gatheredInfo['technology'] = $techInfo;
@@ -282,9 +282,9 @@ class InformationGatheringScanner extends Scanner
     private function gatherSocialMediaInfo(): void
     {
         $this->logInfo("Gathering social media information");
-        
+
         $response = $this->httpClient->get($this->targetUrl);
-        
+
         if ($response) {
             $socialInfo = $this->extractSocialMediaInfo($response);
             $this->gatheredInfo['social_media'] = $socialInfo;
@@ -310,7 +310,7 @@ class InformationGatheringScanner extends Scanner
 
         foreach ($links as $link) {
             $href = $link->getAttribute('href');
-            
+
             if (strpos($href, 'facebook.com/') !== false) {
                 $socialInfo['facebook'][] = $href;
             } elseif (strpos($href, 'twitter.com/') !== false) {
@@ -339,9 +339,9 @@ class InformationGatheringScanner extends Scanner
     private function gatherEmailInfo(): void
     {
         $this->logInfo("Gathering email information");
-        
+
         $domain = $this->getDomainFromUrl($this->targetUrl);
-        
+
         // MX Record Lookup
         $mxRecords = dns_get_record($domain, DNS_MX);
         $emailInfo = [
@@ -364,10 +364,10 @@ class InformationGatheringScanner extends Scanner
     private function gatherCloudInfo(): void
     {
         $this->logInfo("Gathering cloud infrastructure information");
-        
+
         $response = $this->httpClient->get($this->targetUrl);
         $headers = $this->httpClient->head($this->targetUrl);
-        
+
         $cloudInfo = [
             'cloudflare' => false,
             'aws' => false,
@@ -424,11 +424,11 @@ class InformationGatheringScanner extends Scanner
     public function exportToCsv(): string
     {
         $csv = "Type,Description,Details\n";
-        
+
         foreach ($this->gatheredInfo as $type => $data) {
             $csv .= $type . "," . json_encode($data) . "\n";
         }
-        
+
         return $csv;
     }
 }

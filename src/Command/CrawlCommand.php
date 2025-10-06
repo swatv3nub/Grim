@@ -76,7 +76,7 @@ class CrawlCommand extends Command
             if ($input->getOption('timeout')) {
                 $this->httpClient->setTimeout((int) $input->getOption('timeout'));
             }
-            
+
             if ($input->getOption('user-agent')) {
                 $this->httpClient->setUserAgent($input->getOption('user-agent'));
             }
@@ -96,7 +96,7 @@ class CrawlCommand extends Command
             if ($input->getOption('output') || $input->getOption('file')) {
                 $format = $input->getOption('output');
                 $filename = $input->getOption('file') ?: 'grim_crawl_' . date('Y-m-d_H-i-s');
-                
+
                 $exportPath = $this->exporter->export($results, $format, $filename);
                 $io->success("Results exported to: {$exportPath}");
             }
@@ -107,7 +107,6 @@ class CrawlCommand extends Command
             ]);
 
             return Command::SUCCESS;
-
         } catch (\Exception $e) {
             $io->error("Crawl failed: " . $e->getMessage());
             $this->logger->error("Web crawl failed", [
@@ -148,7 +147,7 @@ class CrawlCommand extends Command
 
         // Check robots.txt and sitemap
         $io->text("Checking robots.txt and sitemap...");
-        
+
         $robotsUrl = rtrim($target, '/') . '/robots.txt';
         $robotsResponse = $this->httpClient->get($robotsUrl);
         if ($robotsResponse) {
@@ -177,7 +176,7 @@ class CrawlCommand extends Command
                 $io->text("Crawling {$type}...");
                 $content = file_get_contents($file);
                 $paths = explode(',', $content);
-                
+
                 foreach ($paths as $path) {
                     if ($requestCount >= $maxRequests) {
                         $io->warning("Maximum requests limit reached ({$maxRequests})");
@@ -189,7 +188,7 @@ class CrawlCommand extends Command
                         $testUrl = rtrim($target, '/') . '/' . ltrim($path, '/');
                         $response = $this->httpClient->get($testUrl);
                         $requestCount++;
-                        
+
                         if ($response) {
                             $results[$type][] = [
                                 'path' => $path,
@@ -215,14 +214,16 @@ class CrawlCommand extends Command
         // Add some common directory checks
         $commonDirs = ['admin', 'administrator', 'wp-admin', 'phpmyadmin', 'cpanel', 'webmail', 'mail', 'ftp', 'ssh'];
         $io->text("Checking common directories...");
-        
+
         foreach ($commonDirs as $dir) {
-            if ($requestCount >= $maxRequests) break;
-            
+            if ($requestCount >= $maxRequests) {
+                break;
+            }
+
             $testUrl = rtrim($target, '/') . '/' . $dir;
             $response = $this->httpClient->get($testUrl);
             $requestCount++;
-            
+
             if ($response) {
                 $results['directories'][] = [
                     'name' => $dir,
@@ -268,7 +269,7 @@ class CrawlCommand extends Command
                 $count = count($results[$category]);
                 $totalFindings += $count;
                 $io->text("<comment>{$category} ({$count}):</comment>");
-                
+
                 foreach ($results[$category] as $item) {
                     $io->text("  ✓ {$item['url']} ({$item['response_length']} bytes)");
                 }
@@ -304,10 +305,14 @@ class CrawlCommand extends Command
         foreach (['admin_panels', 'backup_files', 'common_files', 'directories'] as $category) {
             $count += count($results[$category]);
         }
-        
-        if ($results['robots_txt']) $count++;
-        if ($results['sitemap']) $count++;
-        
+
+        if ($results['robots_txt']) {
+            $count++;
+        }
+        if ($results['sitemap']) {
+            $count++;
+        }
+
         return $count;
     }
 
@@ -316,7 +321,7 @@ class CrawlCommand extends Command
         $startTime = strtotime($start);
         $endTime = strtotime($end);
         $duration = $endTime - $startTime;
-        
+
         if ($duration < 60) {
             return $duration . ' seconds';
         } elseif ($duration < 3600) {

@@ -22,7 +22,7 @@ abstract class Scanner
         $this->logger = Logger::getInstance();
         $this->httpClient = new HttpClient();
         $this->config = ConfigManager::getInstance();
-        
+
         $this->initialize();
     }
 
@@ -112,15 +112,15 @@ abstract class Scanner
     protected function sanitizeUrl(string $url): string
     {
         $url = trim($url);
-        
+
         // Remove protocol if present
         $url = preg_replace('/^https?:\/\//', '', $url);
-        
+
         // Add http protocol if none specified
         if (!preg_match('/^https?:\/\//', $url)) {
             $url = 'http://' . $url;
         }
-        
+
         return $url;
     }
 
@@ -136,7 +136,7 @@ abstract class Scanner
         $scheme = $parsed['scheme'] ?? 'http';
         $host = $parsed['host'] ?? '';
         $port = isset($parsed['port']) ? ':' . $parsed['port'] : '';
-        
+
         return $scheme . '://' . $host . $port;
     }
 

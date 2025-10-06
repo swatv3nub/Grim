@@ -19,7 +19,7 @@ class Logger
     {
         $this->logFile = dirname(__DIR__, 2) . '/logs/grim.log';
         $this->logLevel = $_ENV['LOG_LEVEL'] ?? 'INFO';
-        
+
         $this->initializeLogger();
     }
 

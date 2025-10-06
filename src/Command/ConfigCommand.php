@@ -71,12 +71,12 @@ class ConfigCommand extends Command
     private function listConfig(SymfonyStyle $io): int
     {
         $io->title('GRIM Configuration Options');
-        
+
         $config = $this->config->getAll();
-        
+
         foreach ($config as $section => $options) {
             $io->section(ucfirst($section));
-            
+
             if (is_array($options)) {
                 foreach ($options as $key => $value) {
                     $displayValue = is_array($value) ? json_encode($value) : $value;
@@ -93,7 +93,7 @@ class ConfigCommand extends Command
     private function getConfig(SymfonyStyle $io, string $key): int
     {
         $value = $this->config->get($key);
-        
+
         if ($value === null) {
             $io->error("Configuration key '{$key}' not found");
             return Command::FAILURE;
@@ -154,23 +154,23 @@ class ConfigCommand extends Command
     {
         $config = $this->config->getAll();
         $filename = 'grim_config_' . date('Y-m-d_H-i-s');
-        
+
         switch (strtolower($format)) {
             case 'json':
                 $content = json_encode($config, JSON_PRETTY_PRINT);
                 $extension = 'json';
                 break;
-                
+
             case 'yaml':
                 $content = $this->arrayToYaml($config);
                 $extension = 'yaml';
                 break;
-                
+
             case 'ini':
                 $content = $this->arrayToIni($config);
                 $extension = 'ini';
                 break;
-                
+
             default:
                 $io->error("Unsupported export format: {$format}. Supported: json, yaml, ini");
                 return Command::FAILURE;
@@ -178,7 +178,7 @@ class ConfigCommand extends Command
 
         $filepath = $filename . '.' . $extension;
         file_put_contents($filepath, $content);
-        
+
         $io->success("Configuration exported to: {$filepath}");
         return Command::SUCCESS;
     }
@@ -192,20 +192,20 @@ class ConfigCommand extends Command
 
         $extension = pathinfo($filepath, PATHINFO_EXTENSION);
         $content = file_get_contents($filepath);
-        
+
         switch (strtolower($extension)) {
             case 'json':
                 $config = json_decode($content, true);
                 break;
-                
+
             case 'yaml':
                 $config = $this->yamlToArray($content);
                 break;
-                
+
             case 'ini':
                 $config = parse_ini_file($filepath, true);
                 break;
-                
+
             default:
                 $io->error("Unsupported file format: {$extension}");
                 return Command::FAILURE;
@@ -218,17 +218,17 @@ class ConfigCommand extends Command
 
         $this->config->import($config);
         $io->success("Configuration imported from: {$filepath}");
-        
+
         return Command::SUCCESS;
     }
 
     private function validateConfig(SymfonyStyle $io): int
     {
         $io->title('Validating Configuration');
-        
+
         $errors = [];
         $warnings = [];
-        
+
         // Check required settings
         $required = ['scanner.timeout', 'scanner.max_concurrent_scans', 'scanner.user_agent'];
         foreach ($required as $key) {
@@ -236,19 +236,19 @@ class ConfigCommand extends Command
                 $errors[] = "Missing required configuration: {$key}";
             }
         }
-        
+
         // Check timeout value
         $timeout = $this->config->get('scanner.timeout');
         if ($timeout !== null && ($timeout < 1 || $timeout > 300)) {
             $warnings[] = "Timeout value ({$timeout}) is outside recommended range (1-300 seconds)";
         }
-        
+
         // Check max concurrent scans
         $maxScans = $this->config->get('scanner.max_concurrent_scans');
         if ($maxScans !== null && ($maxScans < 1 || $maxScans > 100)) {
             $warnings[] = "Max concurrent scans ({$maxScans}) is outside recommended range (1-100)";
         }
-        
+
         // Display results
         if (empty($errors) && empty($warnings)) {
             $io->success("Configuration is valid");
@@ -259,7 +259,7 @@ class ConfigCommand extends Command
                     $io->text("  • {$error}");
                 }
             }
-            
+
             if (!empty($warnings)) {
                 $io->warning("Configuration warnings:");
                 foreach ($warnings as $warning) {
@@ -267,19 +267,19 @@ class ConfigCommand extends Command
                 }
             }
         }
-        
+
         return empty($errors) ? Command::SUCCESS : Command::FAILURE;
     }
 
     private function showCurrentConfig(SymfonyStyle $io): int
     {
         $io->title('Current GRIM Configuration');
-        
+
         $config = $this->config->getAll();
-        
+
         foreach ($config as $section => $options) {
             $io->section(ucfirst($section));
-            
+
             if (is_array($options)) {
                 foreach ($options as $key => $value) {
                     $displayValue = is_array($value) ? json_encode($value) : $value;
@@ -289,10 +289,10 @@ class ConfigCommand extends Command
                 $io->text("  {$options}");
             }
         }
-        
+
         $io->newLine();
         $io->text("Use --help to see available configuration commands");
-        
+
         return Command::SUCCESS;
     }
 
@@ -300,7 +300,7 @@ class ConfigCommand extends Command
     {
         $yaml = '';
         $indentStr = str_repeat('  ', $indent);
-        
+
         foreach ($array as $key => $value) {
             if (is_array($value)) {
                 $yaml .= $indentStr . $key . ":\n";
@@ -309,17 +309,17 @@ class ConfigCommand extends Command
                 $yaml .= $indentStr . $key . ': ' . $value . "\n";
             }
         }
-        
+
         return $yaml;
     }
 
     private function arrayToIni(array $array): string
     {
         $ini = '';
-        
+
         foreach ($array as $section => $options) {
             $ini .= "[{$section}]\n";
-            
+
             if (is_array($options)) {
                 foreach ($options as $key => $value) {
                     $ini .= "{$key} = {$value}\n";
@@ -327,10 +327,10 @@ class ConfigCommand extends Command
             } else {
                 $ini .= "{$options}\n";
             }
-            
+
             $ini .= "\n";
         }
-        
+
         return $ini;
     }
 
@@ -340,11 +340,13 @@ class ConfigCommand extends Command
         $lines = explode("\n", $yaml);
         $config = [];
         $currentSection = null;
-        
+
         foreach ($lines as $line) {
             $line = trim($line);
-            if (empty($line) || strpos($line, '#') === 0) continue;
-            
+            if (empty($line) || strpos($line, '#') === 0) {
+                continue;
+            }
+
             if (preg_match('/^([a-zA-Z_][a-zA-Z0-9_]*):$/', $line, $matches)) {
                 $currentSection = $matches[1];
                 $config[$currentSection] = [];
@@ -355,7 +357,7 @@ class ConfigCommand extends Command
                 $config[$currentSection][$key] = $value;
             }
         }
-        
+
         return $config;
     }
 }

@@ -40,6 +40,40 @@ php grim.php vuln http://localhost --level low
 php grim.php crawl http://localhost --max-requests 50
 ```
 
+### Cloud Asset Scanning
+```bash
+# Scan all AWS assets
+php grim.php cloud-scan aws
+# Scan a specific Azure asset
+php grim.php cloud-scan azure vm-az-demo-1
+# Scan all GCP assets
+php grim.php cloud-scan gcp
+```
+
+### Container Image Scanning
+```bash
+# Scan a Docker image for vulnerabilities
+php grim.php container-scan nginx:latest
+```
+
+### SIEM/Log Export
+```bash
+# Export a scan result to Splunk
+php grim.php export:siem 1 splunk
+# Export to ELK
+php grim.php export:siem 1 elk
+# Export to Graylog
+php grim.php export:siem 1 graylog
+```
+
+### Result History & Reporting
+```bash
+# List all past scan results
+php grim.php results
+# View details for a specific result
+php grim.php results 1
+```
+
 ---
 
 ## 🔍 Information Gathering Examples
