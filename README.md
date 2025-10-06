@@ -379,7 +379,7 @@ This tool is designed for **educational purposes** and **authorized security tes
 
 ## 🔄 Changelog
 
-### v5.0.0 (2035-08-22)
+### v5.0.0 (2025-10-06)
 - Complete codebase rewrite
 - Modern PHP 8.0+ architecture
 - Composer integration
@@ -391,7 +391,7 @@ This tool is designed for **educational purposes** and **authorized security tes
 - Error handling improvements
 - Testing framework
 
-### v5.0.0 (Previous)
+### v4.0.0 (Previous)
 - Basic vulnerability scanning
 - Information gathering
 - Web crawling
